@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" type="text/css" media="screen" href="../css/formStyles.css" />
+    <title>New Staff Member</title>
+  </head>
+  <body>
+    <div class="form-container">
+      <h3>Add New Staff Member</h3>
+      <form action="../home_pages/staff.html" method="POST">
+        <label for="firstName">First Name</label>
+        <input type="text" id="firstName" name="firstName" required />
+
+        <label for="lastName">Last Name</label>
+        <input type="text" id="lastName" name="lastName" required />
+
+        <label for="phoneNumber">Phone Number</label>
+        <input type="tel" id="phoneNumber" name="phoneNumber" required />
+
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" required />
+
+        <label for="staffRole">Role</label>
+        <select id="staffRole" name="staffRole">
+          <option value="server">Server</option>
+          <option value="lineCook">Line Cook</option>
+          <option value="chef">Chef</option>
+          <option value="bartender">Bartender</option>
+          <option value="host">Host</option>
+          <option value="busser">Busser</option>
+        </select>
+
+        <div class="flex">
+          <button type="submit" class="button">Add Staff</button>
+        </div>
+      </form>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" type="text/css" media="screen" href="../css/formStyles.css" />
+    <title>New Staff Table</title>
+  </head>
+  <body>
+    <div class="form-container">
+      <h3>Add New Staff Table</h3>
+      <form action="../home_pages/staffTables.html" method="POST">
+        <label for="staffID">Staff ID</label>
+        <input type="number" id="staffID" name="staffID" required />
+
+        <label for="tableID">table ID</label>
+        <input type="number" id="tableID" name="tableID" required />
+
+        <div class="flex">
+          <button type="submit" class="button">Add Staff Table</button>
+        </div>
+      </form>
+    </div>
+  </body>
+</html>

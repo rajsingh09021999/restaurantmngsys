@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" type="text/css" media="screen" href="../css/formStyles.css" />
+    <title>Add New Customer</title>
+  </head>
+  <body>
+    <div class="form-container">
+      <h3>Add New Customer</h3>
+      <form id="addCustomerForm">
+        <label for="firstName">First Name</label>
+        <input type="text" id="firstName" name="firstName" required />
+
+        <label for="lastName">Last Name</label>
+        <input type="text" id="lastName" name="lastName" required />
+
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" required />
+
+        <label for="phoneNumber">Phone Number</label>
+        <input type="tel" id="phoneNumber" name="phoneNumber" required />
+
+        <label for="tablePreference">Table Preference</label>
+        <select id="tablePreference" name="tablePreference">
+          <option value="Window">Window</option>
+          <option value="Balcony">Balcony</option>
+          <option value="Patio">Patio</option>
+          <option value="Bar">Bar</option>
+          <option value="Main Dining Room">Main Dining Room</option>
+          <option value="Private Room">Private Room</option>
+        </select>
+
+        <div class="flex">
+          <button type="submit" class="button">Add Customer</button>
+        </div>
+      </form>
+      <div id="message" style="margin-top: 1rem; font-size: 1rem;"></div>
+      <div class="flex">
+        <a class="back" href="../home_pages/customers.html">Back to Customers</a>
+      </div>
+    </div>
+
+    <script>
+      // Add an event listener for form submission
+      document.getElementById('addCustomerForm').addEventListener('submit', function (e) {
+        e.preventDefault(); // Prevent the default form submission
+
+        // Get form data
+        const customer = {
+          firstName: document.getElementById('firstName').value,
+          lastName: document.getElementById('lastName').value,
+          email: document.getElementById('email').value,
+          phoneNumber: document.getElementById('phoneNumber').value,
+          tablePreference: document.getElementById('tablePreference').value,
+        };
+
+        // Send AJAX request to server
+        fetch('/customers', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(customer),
+        })
+          .then((response) => {
+            const messageElement = document.getElementById('message');
+            if (response.ok) {
+              messageElement.textContent = 'Customer added successfully!';
+              messageElement.style.color = 'green';
+              document.getElementById('addCustomerForm').reset(); // Clear the form
+            } else {
+              messageElement.textContent = 'Error adding customer. Please try again.';
+              messageElement.style.color = 'red';
+            }
+
+            // Clear the message after 3 seconds
+            setTimeout(() => {
+              messageElement.textContent = '';
+            }, 3000);
+          })
+          .catch((error) => {
+            console.error('Error:', error);
+            const messageElement = document.getElementById('message');
+            messageElement.textContent = 'An unexpected error occurred.';
+            messageElement.style.color = 'red';
+
+            // Clear the message after 3 seconds
+            setTimeout(() => {
+              messageElement.textContent = '';
+            }, 3000);
+          });
+      });
+    </script>
+  </body>
+</html>

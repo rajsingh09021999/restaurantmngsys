@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" type="text/css" media="screen" href="../css/formStyles.css" />
+    <title>Update Schedule</title>
+  </head>
+  <body>
+    <div class="form-container">
+      <h3>Update Schedule</h3>
+      <form action="../home_pages/schedules.html" method="POST">
+        <label for="scheduleDate">Date</label>
+        <input type="date" id="scheduleDate" name="scheduleDate" required />
+
+        <label for="scheduleStart">Start Time</label>
+        <input type="time" id="scheduleStart" name="scheduleStart" required />
+
+        <label for="scheduleEnd">End Time</label>
+        <input type="time" id="scheduleEnd" name="scheduleEnd" required />
+
+        <label for="scheduleType">Schedule Type</label>
+        <select id="scheduleType" name="scheduleType">
+          <option value="Morning">Morning</option>
+          <option value="Afternoon">Afternoon</option>
+          <option value="Evening">Evening</option>
+        </select>
+
+        <div class="flex">
+          <button type="submit" class="button">Update Schedule</button>
+        </div>
+      </form>
+    </div>
+  </body>
+</html>
