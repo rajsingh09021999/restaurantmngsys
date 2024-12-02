@@ -9,32 +9,115 @@
   <body>
     <div class="form-container">
       <h3>Update Staff Table</h3>
-      <form action="../home_pages/staffTables.html" method="POST">
-          <label for="staffID">Staff ID</label>
-          <select id="staffID" name="staffID" required">
-              <option value="1">1</option>
-              <option value="2">2</option>
-              <option value="3">3</option>
-              <option value="4">4</option>
-              <option value="5">5</option>
-          </select>
-          <label for="tableID">Table ID</label>
-          <select id="tableID" name="tableID" required /">
-              <option value="1">1</option>
-              <option value="2">2</option>
-              <option value="3">3</option>
-              <option value="4">4</option>
-              <option value="5">5</option>
-              <option value="6">6</option>
-              <option value="7">7</option>
-              <option value="8">8</option>
-              <option value="9">9</option>
-              <option value="10">10</option>
-          </select>
-          <div class="flex">
-              <button type="submit" class="button">Update Staff Table</button>
-          </div>
+      <form id="editStaffTableForm">
+        <label for="staffID">Staff ID</label>
+        <select id="staffID" name="staffID" required>
+          <!-- Dynamic options will be populated here -->
+        </select>
+        <label for="tableID">Table ID</label>
+        <select id="tableID" name="tableID" required>
+          <!-- Dynamic options will be populated here -->
+        </select>
+        <div class="flex">
+          <button type="submit" class="button">Update Staff Table</button>
+        </div>
       </form>
+      <p id="message"></p>
+      <div class="flex">
+        <a class="back-button" href="../home_pages/staffTables.html">Back</a>
+      </div>
     </div>
+
+    <script>
+      const urlParams = new URLSearchParams(window.location.search);
+      const staffIDParam = urlParams.get("staffID");
+      const tableIDParam = urlParams.get("tableID");
+
+      // Populate staff and table options
+      function loadOptions(selectedStaffID, selectedTableID) {
+        // Load staff options
+        fetch("http://classwork.engr.oregonstate.edu:9101/staff")
+          .then((response) => response.json())
+          .then((staffList) => {
+            const staffSelect = document.getElementById("staffID");
+            staffList.forEach((staff) => {
+              const option = document.createElement("option");
+              option.value = staff.staffID;
+              option.textContent = `ID: ${staff.staffID}`;
+              if (staff.staffID == selectedStaffID) {
+                option.selected = true; // Preselect the current value
+              }
+              staffSelect.appendChild(option);
+            });
+          })
+          .catch((error) => console.error("Error fetching staff options:", error));
+
+        // Load table options
+        fetch("http://classwork.engr.oregonstate.edu:9101/tables")
+          .then((response) => response.json())
+          .then((tableList) => {
+            const tableSelect = document.getElementById("tableID");
+            tableList.forEach((table) => {
+              const option = document.createElement("option");
+              option.value = table.tableID;
+              option.textContent = `ID: ${table.tableID}`;
+              if (table.tableID == selectedTableID) {
+                option.selected = true; // Preselect the current value
+              }
+              tableSelect.appendChild(option);
+            });
+          })
+          .catch((error) => console.error("Error fetching table options:", error));
+      }
+
+      // Handle form submission
+      document.getElementById("editStaffTableForm").addEventListener("submit", function (e) {
+        e.preventDefault();
+
+        const updatedStaffTable = {
+          staffID: document.getElementById("staffID").value,
+          tableID: document.getElementById("tableID").value,
+        };
+
+        fetch("http://classwork.engr.oregonstate.edu:9101/staffTables", {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            oldStaffID: staffIDParam,
+            oldTableID: tableIDParam,
+            newStaffID: updatedStaffTable.staffID,
+            newTableID: updatedStaffTable.tableID,
+          }),
+        })
+          .then((response) => {
+            const messageElement = document.getElementById("message");
+            if (response.ok) {
+              messageElement.textContent = "Staff table updated successfully!";
+              messageElement.style.color = "green";
+            } else {
+              return response.text().then((text) => {
+                throw new Error(text || `Error ${response.status}`);
+              });
+            }
+          })
+          .catch((error) => {
+            console.error("Error updating staff table:", error);
+            const messageElement = document.getElementById("message");
+            messageElement.textContent = "An unexpected error occurred.";
+            messageElement.style.color = "red";
+          });
+      });
+
+      // Initialize the form
+      document.addEventListener("DOMContentLoaded", () => {
+        if (staffIDParam && tableIDParam) {
+          loadOptions(staffIDParam, tableIDParam);
+        } else {
+          console.error("Staff ID or Table ID missing in URL");
+        }
+      });
+    </script>
   </body>
 </html>
