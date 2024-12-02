@@ -9,17 +9,17 @@
   <body>
     <div class="form-container">
       <h3>Update Table</h3>
-      <form action="../home_pages/tables.html" method="POST">
+      <form id="editTableForm">
         <label for="tableSection">Table Section</label>
         <input type="text" id="tableSection" name="tableSection" required />
 
         <label for="tableType">Table Type</label>
         <select id="tableType" name="tableType">
-          <option value="standard">Standard</option>
-          <option value="booth">Booth</option>
-          <option value="lowTop">Low Top</option>
-          <option value="highTop">High Top</option>
-          <option value="communal">Communal</option>
+          <option value="Standard">Standard</option>
+          <option value="Booth">Booth</option>
+          <option value="High-top">High-top</option>
+          <option value="Low-top">Low-top</option>
+          <option value="Communal">Communal</option>
         </select>
 
         <label for="tableSize">Table Size</label>
@@ -31,10 +31,62 @@
           <option value="Reserved">Reserved</option>
           <option value="Occupied">Occupied</option>
         </select>
+
         <div class="flex">
           <button type="submit" class="button">Update Table</button>
+          <!-- Back Button -->
+          <a href="../home_pages/tables.html" class="button">Back</a>
         </div>
       </form>
+      <div id="message"></div>
     </div>
+
+    <script>
+      // Fetch the table's current data and pre-fill the form
+      const tableID = new URLSearchParams(window.location.search).get("tableID");
+      fetch(`/tables/${tableID}`)
+        .then((response) => response.json())
+        .then((table) => {
+          document.getElementById("tableSection").value = table.tableSection;
+          document.getElementById("tableType").value = table.tableType;
+          document.getElementById("tableSize").value = table.tableSize;
+          document.getElementById("availabilityStatus").value = table.availabilityStatus;
+        })
+        .catch((error) => console.error("Error fetching table data:", error));
+
+      // Handle form submission
+      document.getElementById("editTableForm").addEventListener("submit", function (e) {
+        e.preventDefault(); // Prevent the default form submission
+
+        const updatedTable = {
+          tableSection: document.getElementById("tableSection").value,
+          tableType: document.getElementById("tableType").value,
+          tableSize: document.getElementById("tableSize").value,
+          availabilityStatus: document.getElementById("availabilityStatus").value,
+        };
+
+        fetch(`/tables/${tableID}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(updatedTable),
+        })
+          .then((response) => {
+            if (response.ok) {
+              document.getElementById("message").textContent = "Table updated successfully!";
+              document.getElementById("message").style.color = "green";
+            } else {
+              document.getElementById("message").textContent = "Error updating table.";
+              document.getElementById("message").style.color = "red";
+            }
+          })
+          .catch((error) => {
+            console.error("Error:", error);
+            document.getElementById("message").textContent = "An unexpected error occurred.";
+            document.getElementById("message").style.color = "red";
+          });
+      });
+    </script>
   </body>
 </html>
