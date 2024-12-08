@@ -201,7 +201,28 @@ app.get("/tables", (req, res) => {
       console.error(error);
       res.status(500).json({ error: "Database error", details: error });
     } else {
-      res.json(rows);
+      res.json(rows); // Return all rows as JSON
+    }
+  });
+});
+
+// Read a single table by tableID
+app.get("/tables/:tableID", (req, res) => {
+  const { tableID } = req.params;
+
+  const query = `
+        SELECT tableID, tableSection, tableType, tableSize, availabilityStatus 
+        FROM Tables
+        WHERE tableID = ?;
+    `;
+  db.pool.query(query, [tableID], (error, rows) => {
+    if (error) {
+      console.error(error);
+      res.status(500).json({ error: "Database error", details: error });
+    } else if (rows.length === 0) {
+      res.status(404).json({ error: "Table not found" });
+    } else {
+      res.json(rows[0]);
     }
   });
 });
