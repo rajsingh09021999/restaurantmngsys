@@ -9,6 +9,8 @@
   <body>
     <div class="form-container">
       <h3>Add New Staff Member</h3>
+      
+      <!-- Form for adding a new staff member -->
       <form id="addStaffForm">
         <label for="firstName">First Name</label>
         <input type="text" id="firstName" name="firstName" required />
@@ -21,7 +23,8 @@
 
         <label for="email">Email</label>
         <input type="email" id="email" name="email" required />
-
+        
+        <!-- dropdown for selecting the staff member's role -->
         <label for="staffRole">Role</label>
         <select id="staffRole" name="staffRole">
           <option value="server">Server</option>
@@ -45,6 +48,7 @@
       document.getElementById("addStaffForm").addEventListener("submit", function (e) {
         e.preventDefault();
 
+        // Collect form values into an object
         const staff = {
           firstName: document.getElementById("firstName").value,
           lastName: document.getElementById("lastName").value,
@@ -53,6 +57,7 @@
           staffRole: document.getElementById("staffRole").value,
         };
 
+        // Send a POST request to the server with the staff data
         fetch("http://classwork.engr.oregonstate.edu:9101/staff", {
           method: "POST",
           headers: {
