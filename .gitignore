@@ -1,0 +1,62 @@
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Dependency directories
+node_modules/
+bower_components/
+
+# Build directories
+dist/
+build/
+
+# Runtime data
+*.pid
+*.seed
+*.pid.lock
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# OS generated files
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+
+# IDE and editor files
+.idea/
+.vscode/
+*.code-workspace
+
+# Coverage directories
+coverage/
+
+# npm package lock files
+package-lock.json
+yarn.lock
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Static assets cache
+*.cache
+
+# Public generated files
+public/
+
+# Testing-related files
+jest/
+.nyc_output/
+test-output/
+
+# Miscellaneous
+*.bak
+*.orig
