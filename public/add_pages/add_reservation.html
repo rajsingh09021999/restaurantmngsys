@@ -9,6 +9,8 @@
   <body>
     <div class="form-container">
       <h3>Add New Reservation</h3>
+
+      <!-- Reservation form with fields for customer, table, date, time, party size, and status -->
       <form id="addReservationForm">
         <!-- Customer Dropdown -->
         <label for="customerID">Customer</label>
@@ -16,7 +18,7 @@
           <option value="">Select a Customer</option>
         </select>
 
-        <!-- Table Dropdown -->
+        <!-- Dropdown to select an existing table -->
         <label for="tableID">Table</label>
         <select id="tableID" name="tableID" required>
           <option value="">Select a Table</option>
@@ -31,13 +33,15 @@
         <label for="partySize">Party Size</label>
         <input type="number" id="partySize" name="partySize" min="1" max="20" required />
 
+        <!-- Dropdown to select the reservation status -->
         <label for="reservationStatus">Reservation Status</label>
         <select id="reservationStatus" name="reservationStatus">
           <option value="Booked">Booked</option>
           <option value="Completed">Completed</option>
           <option value="Canceled">Canceled</option>
         </select>
-
+        
+        <!-- Buttons for submission and navigating back to reservations page -->
         <div class="flex">
           <button type="submit" class="button">Add Reservation</button>
           <a href="../home_pages/reservations.html" class="button">Back</a>
@@ -47,7 +51,7 @@
     </div>
 
     <script>
-      // Fetch existing customers to populate the customer dropdown
+      // Populate the Customer dropdown with existing customers
       fetch("/customers")
         .then((response) => response.json())
         .then((customers) => {
@@ -61,7 +65,7 @@
         })
         .catch((error) => console.error("Error fetching customers:", error));
 
-      // Fetch existing tables to populate the table dropdown
+      // Populate the Table dropdown with existing tables
       fetch("/tables")
         .then((response) => response.json())
         .then((tables) => {
@@ -75,10 +79,11 @@
         })
         .catch((error) => console.error("Error fetching tables:", error));
 
-      // Handle form submission
+      // Handle form submission to add a new reservation
       document.getElementById("addReservationForm").addEventListener("submit", function (e) {
         e.preventDefault();
-
+        
+        // Collect form data for the new reservation
         const reservation = {
           customerID: document.getElementById("customerID").value,
           tableID: document.getElementById("tableID").value,
@@ -88,6 +93,7 @@
           reservationStatus: document.getElementById("reservationStatus").value,
         };
 
+        // Send the data to the server via a POST request
         fetch("/reservations", {
           method: "POST",
           headers: {
@@ -98,10 +104,12 @@
           .then((response) => {
             const messageElement = document.getElementById("message");
             if (response.ok) {
+              // Display success message and reset the form
               messageElement.textContent = "Reservation added successfully!";
               messageElement.style.color = "green";
               document.getElementById("addReservationForm").reset();
             } else {
+              // Display error message if there is a failed request
               messageElement.textContent = "Error adding reservation.";
               messageElement.style.color = "red";
             }
