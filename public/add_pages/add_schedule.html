@@ -1,8 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    <!-- Set character encoding and ensure the page is responsive on all devices -->
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Link to the external CSS file for styling the form -->
     <link rel="stylesheet" type="text/css" media="screen" href="../css/formStyles.css" />
     <title>Add New Schedule</title>
   </head>
@@ -10,15 +13,19 @@
     <div class="form-container">
       <h3>Add New Schedule</h3>
       <form id="addScheduleForm">
+
+        <!-- Date input field for selecting the schedule date -->
         <label for="scheduleDate">Date</label>
         <input type="date" id="scheduleDate" name="scheduleDate" required />
-
+        
+        <!-- Time input fields for the start time and end time-->
         <label for="scheduleStart">Start Time</label>
         <input type="time" id="scheduleStart" name="scheduleStart" required />
 
         <label for="scheduleEnd">End Time</label>
         <input type="time" id="scheduleEnd" name="scheduleEnd" required />
 
+        <!-- Dropdown menu to select the type of schedule (Morning, Afternoon, or Evening) -->
         <label for="scheduleType">Schedule Type</label>
         <select id="scheduleType" name="scheduleType" required>
           <option value="Morning">Morning</option>
@@ -39,6 +46,7 @@
       document.getElementById("addScheduleForm").addEventListener("submit", function (e) {
         e.preventDefault();
 
+        // Gather the form data into an object
         const schedule = {
           scheduleDate: document.getElementById("scheduleDate").value,
           scheduleStart: document.getElementById("scheduleStart").value,
@@ -46,16 +54,18 @@
           scheduleType: document.getElementById("scheduleType").value,
         };
 
+        // Send the schedule data to the server with a POST request
         fetch("http://classwork.engr.oregonstate.edu:9101/schedules", {
           method: "POST",
           headers: {
-            "Content-Type": "application/json",
+            "Content-Type": "application/json",  // The server expects JSON data
           },
-          body: JSON.stringify(schedule),
+          body: JSON.stringify(schedule),       // Convert the object to JSON for sending
         })
           .then((response) => {
             const messageElement = document.getElementById("message");
             if (response.ok) {
+              // Show success message if the request was successful
               messageElement.textContent = "Schedule added successfully!";
               messageElement.style.color = "green";
               document.getElementById("addScheduleForm").reset();
@@ -68,6 +78,7 @@
             }, 3000);
           })
           .catch((error) => {
+            // Handle network errors or unexpected issues
             console.error("Error:", error);
             const messageElement = document.getElementById("message");
             messageElement.textContent = "An unexpected error occurred.";
