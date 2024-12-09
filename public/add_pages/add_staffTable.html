@@ -30,7 +30,7 @@
 
     <script>
       // Populate Staff ID dropdown
-      fetch("http://classwork.engr.oregonstate.edu:9107/staff")
+      fetch("http://classwork.engr.oregonstate.edu:9101/staff")
         .then((response) => response.json())
         .then((staff) => {
           const staffDropdown = document.getElementById("staffID");
@@ -46,7 +46,7 @@
         });
 
       // Populate Table ID dropdown
-      fetch("http://classwork.engr.oregonstate.edu:9107/tables")
+      fetch("http://classwork.engr.oregonstate.edu:9101/tables")
         .then((response) => response.json())
         .then((tables) => {
           const tableDropdown = document.getElementById("tableID");
@@ -70,7 +70,7 @@
           tableID: document.getElementById("tableID").value,
         };
 
-        fetch("http://classwork.engr.oregonstate.edu:9107/staffTables", {
+        fetch("http://classwork.engr.oregonstate.edu:9101/staffTables", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

@@ -33,7 +33,7 @@
     <script>
       // Function to fetch and display staff data
       function loadStaff() {
-        fetch("http://classwork.engr.oregonstate.edu:9107/staff")
+        fetch("http://classwork.engr.oregonstate.edu:9101/staff")
           .then((response) => response.json())
           .then((staffList) => {
             const tableBody = document.getElementById("staffTable");
@@ -64,7 +64,7 @@
       // Function to delete a staff member
       function deleteStaff(staffID) {
         if (confirm("Are you sure you want to delete this staff member?")) {
-          fetch(`http://classwork.engr.oregonstate.edu:9107/staff/${staffID}`, { method: "DELETE" })
+          fetch(`http://classwork.engr.oregonstate.edu:9101/staff/${staffID}`, { method: "DELETE" })
             .then((response) => {
               if (response.ok) {
                 alert("Staff member deleted successfully");

@@ -29,7 +29,7 @@
     <script>
       // Fetch and display staff schedule data
       function loadStaffSchedules() {
-        fetch("http://classwork.engr.oregonstate.edu:9107/staffSchedules")
+        fetch("http://classwork.engr.oregonstate.edu:9101/staffSchedules")
           .then((response) => response.json())
           .then((staffSchedules) => {
             const tableBody = document.querySelector("#staffSchedulesTable tbody");
@@ -54,7 +54,7 @@
       // Function to delete a staff schedule
       function deleteStaffSchedule(staffID, scheduleID) {
         if (confirm("Are you sure you want to delete this staff schedule?")) {
-          fetch("http://classwork.engr.oregonstate.edu:9107/staffSchedules", {
+          fetch("http://classwork.engr.oregonstate.edu:9101/staffSchedules", {
             method: "DELETE",
             headers: {
               "Content-Type": "application/json",

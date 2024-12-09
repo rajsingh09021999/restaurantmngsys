@@ -34,7 +34,7 @@
     <script>
       // Function to fetch and display reservation data
       function loadReservations() {
-        fetch("http://classwork.engr.oregonstate.edu:9107/reservations")
+        fetch("http://classwork.engr.oregonstate.edu:9101/reservations")
           .then((response) => response.json())
           .then((reservations) => {
             const tableBody = document.getElementById("reservationTable");
@@ -68,7 +68,7 @@
       // Function to delete a reservation
       function deleteReservation(reservationID) {
         if (confirm("Are you sure you want to delete this reservation?")) {
-          fetch(`http://classwork.engr.oregonstate.edu:9107/reservations/${reservationID}`, { method: "DELETE" })
+          fetch(`http://classwork.engr.oregonstate.edu:9101/reservations/${reservationID}`, { method: "DELETE" })
             .then((response) => {
               if (response.ok) {
                 alert("Reservation deleted successfully");
