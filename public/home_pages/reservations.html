@@ -9,76 +9,85 @@
   <body>
     <h1>Reservations</h1>
     <table>
-      <tr>
-        <th>reservationID</th>
-        <th>customerID</th>
-        <th>tableID</th>
-        <th>reservationDate</th>
-        <th>reservationTime</th>
-        <th>partySize</th>
-        <th>reservationStatus</th>
-        <th>Edit</th>
-        <th>Delete</th>
-      </tr>
-      <tr>
-        <td>1</td>
-        <td>1</td>
-        <td>1</td>
-        <td>2024-11-01</td>
-        <td>18:30:00</td>
-        <td>4</td>
-        <td>Booked</td>
-        <td><a href="../edit_pages/edit_reservation.html">Edit</a></td>
-        <td><a href="../home_pages/reservations.html">Delete</a></td>
-      </tr>
-      <tr>
-        <td>2</td>
-        <td>2</td>
-        <td>7</td>
-        <td>2024-11-01</td>
-        <td>19:00:00</td>
-        <td>2</td>
-        <td>Completed</td>
-        <td><a href="../edit_pages/edit_reservation.html">Edit</a></td>
-        <td><a href="../home_pages/reservations.html">Delete</a></td>
-      </tr>
-      <tr>
-        <td>3</td>
-        <td>3</td>
-        <td>6</td>
-        <td>2024-11-02</td>
-        <td>20:00:00</td>
-        <td>3</td>
-        <td>Booked</td>
-        <td><a href="../edit_pages/edit_reservation.html">Edit</a></td>
-        <td><a href="../home_pages/reservations.html">Delete</a></td>
-      </tr>
-      <tr>
-        <td>4</td>
-        <td>4</td>
-        <td>5</td>
-        <td>2024-11-03</td>
-        <td>18:00:00</td>
-        <td>6</td>
-        <td>Canceled</td>
-        <td><a href="../edit_pages/edit_reservation.html">Edit</a></td>
-        <td><a href="../home_pages/reservations.html">Delete</a></td>
-      </tr>
-      <tr>
-        <td>5</td>
-        <td>5</td>
-        <td>9</td>
-        <td>2024-11-04</td>
-        <td>18:45:00</td>
-        <td>4</td>
-        <td>Booked</td>
-        <td><a href="../edit_pages/edit_reservation.html">Edit</a></td>
-        <td><a href="../home_pages/reservations.html">Delete</a></td>
-      </tr>
+      <thead>
+        <tr>
+          <th>reservationID</th>
+          <th>customerID</th>
+          <th>tableID</th>
+          <th>reservationDate</th>
+          <th>reservationTime</th>
+          <th>partySize</th>
+          <th>reservationStatus</th>
+          <th>Edit</th>
+          <th>Delete</th>
+        </tr>
+      </thead>
+      <tbody id="reservationTable">
+        <!-- Dynamic reservation rows will be inserted here -->
+      </tbody>
     </table>
     <div class="flex">
       <a class="back" href="../add_pages/add_reservation.html">Add</a>
       <a class="back" href="../index.html">Back</a>
     </div>
+
+    <script>
+      // Function to fetch and display reservation data
+      function loadReservations() {
+        fetch("http://classwork.engr.oregonstate.edu:9101/reservations")
+          .then((response) => response.json())
+          .then((reservations) => {
+            const tableBody = document.getElementById("reservationTable");
+            tableBody.innerHTML = ""; // Clear the table body
+
+            reservations.forEach((reservation) => {
+              const row = document.createElement("tr");
+
+              const formattedDate = new Date(reservation.reservationDate).toISOString().split("T")[0];
+
+              row.innerHTML = `
+                <td>${reservation.reservationID}</td>
+                <td>${reservation.customerID}</td>
+                <td>${reservation.tableID}</td>
+                <td>${formattedDate}</td>
+                <td>${reservation.reservationTime}</td>
+                <td>${reservation.partySize}</td>
+                <td>${reservation.reservationStatus}</td>
+                <td><a href="../edit_pages/edit_reservation.html?reservationID=${reservation.reservationID}">Edit</a></td>
+                <td><a href="#" onclick="deleteReservation(${reservation.reservationID})">Delete</a></td>
+              `;
+
+              tableBody.appendChild(row);
+            });
+          })
+          .catch((error) => {
+            console.error("Error fetching reservations:", error);
+          });
+      }
+
+      // Function to delete a reservation
+      function deleteReservation(reservationID) {
+        if (confirm("Are you sure you want to delete this reservation?")) {
+          fetch(`http://classwork.engr.oregonstate.edu:9101/reservations/${reservationID}`, { method: "DELETE" })
+            .then((response) => {
+              if (response.ok) {
+                alert("Reservation deleted successfully");
+                loadReservations(); // Reload the reservation list
+              } else {
+                alert("Error deleting reservation");
+              }
+            })
+            .catch((error) => {
+              console.error("Error deleting reservation:", error);
+            });
+        }
+      }
+
+      // Load reservations when the page loads
+      document.addEventListener("DOMContentLoaded", loadReservations)
+    </script>
   </body>
 </html>
+
+
+

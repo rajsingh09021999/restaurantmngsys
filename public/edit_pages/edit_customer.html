@@ -34,6 +34,7 @@
 
         <div class="flex">
           <button type="submit" class="button">Update Customer</button>
+          <a href="../home_pages/customers.html" class="button">Back</a>
         </div>
       </form>
       <div id="message"></div>
@@ -41,50 +42,50 @@
 
     <script>
       // Fetch the customer's current data and pre-fill the form
-      const customerID = new URLSearchParams(window.location.search).get('customerID');
+      const customerID = new URLSearchParams(window.location.search).get("customerID");
       fetch(`/customers/${customerID}`)
-        .then(response => response.json())
-        .then(customer => {
-          document.getElementById('firstName').value = customer.firstName;
-          document.getElementById('lastName').value = customer.lastName;
-          document.getElementById('email').value = customer.email;
-          document.getElementById('phoneNumber').value = customer.phoneNumber;
-          document.getElementById('tablePreference').value = customer.tablePreference;
+        .then((response) => response.json())
+        .then((customer) => {
+          document.getElementById("firstName").value = customer.firstName;
+          document.getElementById("lastName").value = customer.lastName;
+          document.getElementById("email").value = customer.email;
+          document.getElementById("phoneNumber").value = customer.phoneNumber;
+          document.getElementById("tablePreference").value = customer.tablePreference;
         })
-        .catch(error => console.error('Error fetching customer data:', error));
+        .catch((error) => console.error("Error fetching customer data:", error));
 
       // Handle form submission
-      document.getElementById('editCustomerForm').addEventListener('submit', function (e) {
+      document.getElementById("editCustomerForm").addEventListener("submit", function (e) {
         e.preventDefault(); // Prevent the default form submission
 
         const updatedCustomer = {
-          firstName: document.getElementById('firstName').value,
-          lastName: document.getElementById('lastName').value,
-          email: document.getElementById('email').value,
-          phoneNumber: document.getElementById('phoneNumber').value,
-          tablePreference: document.getElementById('tablePreference').value,
+          firstName: document.getElementById("firstName").value,
+          lastName: document.getElementById("lastName").value,
+          email: document.getElementById("email").value,
+          phoneNumber: document.getElementById("phoneNumber").value,
+          tablePreference: document.getElementById("tablePreference").value,
         };
 
-        fetch(`/customers/${customerID}`, {
-          method: 'PUT',
+        fetch(`http://classwork.engr.oregonstate.edu:9101/customers/${customerID}`, {
+          method: "PUT",
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
           body: JSON.stringify(updatedCustomer),
         })
-          .then(response => {
+          .then((response) => {
             if (response.ok) {
-              document.getElementById('message').textContent = 'Customer updated successfully!';
-              document.getElementById('message').style.color = 'green';
+              document.getElementById("message").textContent = "Customer updated successfully!";
+              document.getElementById("message").style.color = "green";
             } else {
-              document.getElementById('message').textContent = 'Error updating customer.';
-              document.getElementById('message').style.color = 'red';
+              document.getElementById("message").textContent = "Error updating customer.";
+              document.getElementById("message").style.color = "red";
             }
           })
-          .catch(error => {
-            console.error('Error:', error);
-            document.getElementById('message').textContent = 'An unexpected error occurred.';
-            document.getElementById('message').style.color = 'red';
+          .catch((error) => {
+            console.error("Error:", error);
+            document.getElementById("message").textContent = "An unexpected error occurred.";
+            document.getElementById("message").style.color = "red";
           });
       });
     </script>

@@ -4,81 +4,81 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" type="text/css" media="screen" href="../css/styles.css" />
-    <title>Staff</title>
+    <title>Staff Tables</title>
   </head>
   <body>
     <h1>Staff Tables</h1>
-    <table>
-      <tr>
-        <th>staffID</th>
-        <th>tableID</th>
-        <th>Edit</th>
-        <th>Delete</th>
-      </tr>
-      <tr>
-        <td>1</td>
-        <td>1</td>
-        <td><a href="../edit_pages/edit_staffTable.html">Edit</a></td>
-        <td><a href="../home_pages/staffTables.html">Delete</a></td>
-      </tr>
-      <tr>
-        <td>1</td>
-        <td>2</td>
-        <td><a href="../edit_pages/edit_staffTable.html">Edit</a></td>
-        <td><a href="../home_pages/staffTables.html">Delete</a></td>
-      </tr>
-      <tr>
-        <td>1</td>
-        <td>6</td>
-        <td><a href="../edit_pages/edit_staffTable.html">Edit</a></td>
-        <td><a href="../home_pages/staffTables.html">Delete</a></td>
-      </tr>
-      <tr>
-        <td>2</td>
-        <td>4</td>
-        <td><a href="../edit_pages/edit_staffTable.html">Edit</a></td>
-        <td><a href="../home_pages/staffTables.html">Delete</a></td>
-      </tr>
-      <tr>
-        <td>2</td>
-        <td>3</td>
-        <td><a href="../edit_pages/edit_staffTable.html">Edit</a></td>
-        <td><a href="../home_pages/staffTables.html">Delete</a></td>
-      </tr>
-      <tr>
-        <td>3</td>
-        <td>10</td>
-        <td><a href="../edit_pages/edit_staffTable.html">Edit</a></td>
-        <td><a href="../home_pages/staffTables.html">Delete</a></td>
-      </tr>
-      <tr>
-        <td>3</td>
-        <td>11</td>
-        <td><a href="../edit_pages/edit_staffTable.html">Edit</a></td>
-        <td><a href="../home_pages/staffTables.html">Delete</a></td>
-      </tr>
-      <tr>
-        <td>4</td>
-        <td>7</td>
-        <td><a href="../edit_pages/edit_staffTable.html">Edit</a></td>
-        <td><a href="../home_pages/staffTables.html">Delete</a></td>
-      </tr>
-      <tr>
-        <td>5</td>
-        <td>5</td>
-        <td><a href="../edit_pages/edit_staffTable.html">Edit</a></td>
-        <td><a href="../home_pages/staffTables.html">Delete</a></td>
-      </tr>
-      <tr>
-        <td>5</td>
-        <td>9</td>
-        <td><a href="../edit_pages/edit_staffTable.html">Edit</a></td>
-        <td><a href="../home_pages/staffTables.html">Delete</a></td>
-      </tr>
+    <table id="staffTablesTable">
+      <thead>
+        <tr>
+          <th>Staff ID</th>
+          <th>Table ID</th>
+          <th>Edit</th>
+          <th>Delete</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Data will be dynamically loaded here -->
+      </tbody>
     </table>
     <div class="flex">
       <a class="back" href="../add_pages/add_staffTable.html">Add</a>
       <a class="back" href="../index.html">Back</a>
     </div>
+
+    <script>
+      // Fetch and display staff table data
+      function loadStaffTables() {
+        fetch("http://classwork.engr.oregonstate.edu:9101/staffTables")
+          .then((response) => response.json())
+          .then((staffTables) => {
+            const tableBody = document.querySelector("#staffTablesTable tbody");
+            tableBody.innerHTML = ""; // Clear existing table rows
+
+            staffTables.forEach((staffTable) => {
+              const row = document.createElement("tr");
+
+              row.innerHTML = `
+                <td>${staffTable.staffID}</td>
+                <td>${staffTable.tableID}</td>
+                <td><a href="../edit_pages/edit_staffTable.html?staffID=${staffTable.staffID}&tableID=${staffTable.tableID}">Edit</a></td>
+                <td><a href="#" onclick="deleteStaffTable(${staffTable.staffID}, ${staffTable.tableID})">Delete</a></td>
+              `;
+
+              tableBody.appendChild(row);
+            });
+          })
+          .catch((error) => {
+            console.error("Error fetching staff tables:", error);
+          });
+      }
+
+      // Function to delete a staff table entry
+      function deleteStaffTable(staffID, tableID) {
+        if (confirm("Are you sure you want to delete this staff table?")) {
+          fetch("http://classwork.engr.oregonstate.edu:9101/staffTables", {
+            method: "DELETE",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ staffID: staffID, tableID: tableID }),
+          })
+            .then((response) => {
+              if (response.ok) {
+                alert("Staff table deleted successfully");
+                loadStaffTables(); // Reload the table data
+              } else {
+                alert("Error deleting staff table.");
+              }
+            })
+            .catch((error) => {
+              console.error("Error deleting staff table:", error);
+            });
+        }
+      }
+
+      // Load staff tables on page load
+      document.addEventListener("DOMContentLoaded", loadStaffTables);
+    </script>
   </body>
 </html>

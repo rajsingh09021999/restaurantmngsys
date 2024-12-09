@@ -4,12 +4,12 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" type="text/css" media="screen" href="../css/formStyles.css" />
-    <title>New Staff Schedule</title>
+    <title>Add New Staff Schedule</title>
   </head>
   <body>
     <div class="form-container">
       <h3>Add New Staff Schedule</h3>
-      <form action="../home_pages/staffSchedules.html" method="POST">
+      <form id="addStaffScheduleForm">
         <label for="scheduleID">Schedule ID</label>
         <input type="number" id="scheduleID" name="scheduleID" required />
 
@@ -20,6 +20,50 @@
           <button type="submit" class="button">Add Staff Schedule</button>
         </div>
       </form>
+      <p id="message"></p>
     </div>
+
+    <script>
+      // Handle form submission
+      document.getElementById("addStaffScheduleForm").addEventListener("submit", function (e) {
+        e.preventDefault();
+
+        const staffSchedule = {
+          scheduleID: document.getElementById("scheduleID").value,
+          staffID: document.getElementById("staffID").value,
+        };
+
+        fetch("http://classwork.engr.oregonstate.edu:9101/staffSchedules", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(staffSchedule),
+        })
+          .then((response) => {
+            const messageElement = document.getElementById("message");
+            if (response.ok) {
+              messageElement.textContent = "Staff schedule added successfully!";
+              messageElement.style.color = "green";
+              document.getElementById("addStaffScheduleForm").reset();
+            } else {
+              messageElement.textContent = "Error adding staff schedule.";
+              messageElement.style.color = "red";
+            }
+            setTimeout(() => {
+              messageElement.textContent = "";
+            }, 3000);
+          })
+          .catch((error) => {
+            console.error("Error:", error);
+            const messageElement = document.getElementById("message");
+            messageElement.textContent = "An unexpected error occurred.";
+            messageElement.style.color = "red";
+            setTimeout(() => {
+              messageElement.textContent = "";
+            }, 3000);
+          });
+      });
+    </script>
   </body>
 </html>

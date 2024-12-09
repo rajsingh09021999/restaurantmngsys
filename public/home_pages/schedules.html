@@ -4,69 +4,83 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" type="text/css" media="screen" href="../css/styles.css" />
-    <title>Schedules</title>
+    <title>Schedules (Available Shifts)</title>
   </head>
   <body>
     <h1>Schedules (Available Shifts)</h1>
     <table>
-      <tr>
-        <th>scheduleID</th>
-        <th>scheduleDate</th>
-        <th>scheduleStart</th>
-        <th>scheduleEnd</th>
-        <th>scheduleType</th>
-        <th>Edit</th>
-        <th>Delete</th>
-      </tr>
-      <tr>
-        <td>1</td>
-        <td>2024-11-01</td>
-        <td>8:00:00</td>
-        <td>12:00:00</td>
-        <td>Morning</td>
-        <td><a href="../edit_pages/edit_schedule.html">Edit</a></td>
-        <td><a href="../home_pages/schedules.html">Delete</a></td>
-      </tr>
-      <tr>
-        <td>2</td>
-        <td>2024-11-01</td>
-        <td>12:00:00</td>
-        <td>16:00:00</td>
-        <td>Afternoon</td>
-        <td><a href="../edit_pages/edit_schedule.html">Edit</a></td>
-        <td><a href="../home_pages/schedules.html">Delete</a></td>
-      </tr>
-      <tr>
-        <td>3</td>
-        <td>2024-11-01</td>
-        <td>16:00:00</td>
-        <td>20:00:00</td>
-        <td>Evening</td>
-        <td><a href="../edit_pages/edit_schedule.html">Edit</a></td>
-        <td><a href="../home_pages/schedules.html">Delete</a></td>
-      </tr>
-      <tr>
-        <td>4</td>
-        <td>2024-11-02</td>
-        <td>8:00:00</td>
-        <td>12:00:00</td>
-        <td>Morning</td>
-        <td><a href="../edit_pages/edit_schedule.html">Edit</a></td>
-        <td><a href="../home_pages/schedules.html">Delete</a></td>
-      </tr>
-      <tr>
-        <td>5</td>
-        <td>2024-11-02</td>
-        <td>12:00:00</td>
-        <td>16:00:00</td>
-        <td>Afternoon</td>
-        <td><a href="../edit_pages/edit_schedule.html">Edit</a></td>
-        <td><a href="../home_pages/schedules.html">Delete</a></td>
-      </tr>
+      <thead>
+        <tr>
+          <th>scheduleID</th>
+          <th>scheduleDate</th>
+          <th>scheduleStart</th>
+          <th>scheduleEnd</th>
+          <th>scheduleType</th>
+          <th>Edit</th>
+          <th>Delete</th>
+        </tr>
+      </thead>
+      <tbody id="scheduleTable">
+        <!-- Dynamic schedule rows will be inserted here -->
+      </tbody>
     </table>
     <div class="flex">
       <a class="back" href="../add_pages/add_schedule.html">Add</a>
       <a class="back" href="../index.html">Back</a>
     </div>
+
+    <script>
+      // Function to fetch and display schedules
+      function loadSchedules() {
+        fetch("http://classwork.engr.oregonstate.edu:9101/schedules")
+          .then((response) => response.json())
+          .then((schedules) => {
+            const tableBody = document.getElementById("scheduleTable");
+            tableBody.innerHTML = ""; // Clear the table body
+
+            schedules.forEach((schedule) => {
+
+              const formattedDate = new Date(schedule.scheduleDate).toISOString().split("T")[0];
+              const row = document.createElement("tr");
+
+              row.innerHTML = `
+                <td>${schedule.scheduleID}</td>
+                <td>${formattedDate}</td>
+                <td>${schedule.scheduleStart}</td>
+                <td>${schedule.scheduleEnd}</td>
+                <td>${schedule.scheduleType}</td>
+                <td><a href="../edit_pages/edit_schedule.html?scheduleID=${schedule.scheduleID}">Edit</a></td>
+                <td><a href="#" onclick="deleteSchedule(${schedule.scheduleID})">Delete</a></td>
+              `;
+
+              tableBody.appendChild(row);
+            });
+          })
+          .catch((error) => {
+            console.error("Error fetching schedules:", error);
+          });
+      }
+
+      // Function to delete a schedule
+      function deleteSchedule(scheduleID) {
+        if (confirm("Are you sure you want to delete this schedule?")) {
+          fetch(`http://classwork.engr.oregonstate.edu:9101/schedules/${scheduleID}`, { method: "DELETE" })
+            .then((response) => {
+              if (response.ok) {
+                alert("Schedule deleted successfully");
+                loadSchedules(); // Reload the schedule list
+              } else {
+                alert("Error deleting schedule");
+              }
+            })
+            .catch((error) => {
+              console.error("Error deleting schedule:", error);
+            });
+        }
+      }
+
+      // Load schedules when the page loads
+      document.addEventListener("DOMContentLoaded", loadSchedules);
+    </script>
   </body>
 </html>

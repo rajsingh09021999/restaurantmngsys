@@ -4,12 +4,12 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" type="text/css" media="screen" href="../css/formStyles.css" />
-    <title>New Schedule</title>
+    <title>Add New Schedule</title>
   </head>
   <body>
     <div class="form-container">
       <h3>Add New Schedule</h3>
-      <form action="../home_pages/schedules.html" method="POST">
+      <form id="addScheduleForm">
         <label for="scheduleDate">Date</label>
         <input type="date" id="scheduleDate" name="scheduleDate" required />
 
@@ -20,16 +20,60 @@
         <input type="time" id="scheduleEnd" name="scheduleEnd" required />
 
         <label for="scheduleType">Schedule Type</label>
-        <select id="scheduleType" name="scheduleType">
+        <select id="scheduleType" name="scheduleType" required>
           <option value="Morning">Morning</option>
           <option value="Afternoon">Afternoon</option>
           <option value="Evening">Evening</option>
         </select>
 
-        <div class="flex">
-          <button type="submit" class="button">Add Schedule</button>
-        </div>
+        <button type="submit" class="button">Add Schedule</button>
       </form>
+      <p id="message"></p>
     </div>
+
+    <script>
+      // Form submission handler
+      document.getElementById("addScheduleForm").addEventListener("submit", function (e) {
+        e.preventDefault();
+
+        const schedule = {
+          scheduleDate: document.getElementById("scheduleDate").value,
+          scheduleStart: document.getElementById("scheduleStart").value,
+          scheduleEnd: document.getElementById("scheduleEnd").value,
+          scheduleType: document.getElementById("scheduleType").value,
+        };
+
+        fetch("http://classwork.engr.oregonstate.edu:9101/schedules", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(schedule),
+        })
+          .then((response) => {
+            const messageElement = document.getElementById("message");
+            if (response.ok) {
+              messageElement.textContent = "Schedule added successfully!";
+              messageElement.style.color = "green";
+              document.getElementById("addScheduleForm").reset();
+            } else {
+              messageElement.textContent = "Error adding schedule.";
+              messageElement.style.color = "red";
+            }
+            setTimeout(() => {
+              messageElement.textContent = "";
+            }, 3000);
+          })
+          .catch((error) => {
+            console.error("Error:", error);
+            const messageElement = document.getElementById("message");
+            messageElement.textContent = "An unexpected error occurred.";
+            messageElement.style.color = "red";
+            setTimeout(() => {
+              messageElement.textContent = "";
+            }, 3000);
+          });
+      });
+    </script>
   </body>
 </html>

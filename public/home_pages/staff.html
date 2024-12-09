@@ -4,75 +4,83 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" type="text/css" media="screen" href="../css/styles.css" />
-    <title>Staff</title>
+    <title>Staff Members</title>
   </head>
   <body>
     <h1>Staff Members</h1>
     <table>
-      <tr>
-        <th>staffID</th>
-        <th>firstName</th>
-        <th>lastName</th>
-        <th>phoneNumber</th>
-        <th>email</th>
-        <th>staffRole</th>
-        <th>Edit</th>
-        <th>Delete</th>
-      </tr>
-      <tr>
-        <td>1</td>
-        <td>Alice</td>
-        <td>Johnson</td>
-        <td>1234567890</td>
-        <td>alice.johnson@gmail.com</td>
-        <td>Server</td>
-        <td><a href="../edit_pages/edit_staff.html">Edit</a></td>
-        <td><a href="../home_pages/staff.html">Delete</a></td>
-      </tr>
-      <tr>
-        <td>2</td>
-        <td>Bob</td>
-        <td>Smith</td>
-        <td>1987654321</td>
-        <td>bob.smith@yahoo.com</td>
-        <td>Host</td>
-        <td><a href="../edit_pages/edit_staff.html">Edit</a></td>
-        <td><a href="../home_pages/staff.html">Delete</a></td>
-      </tr>
-      <tr>
-        <td>3</td>
-        <td>Carol</td>
-        <td>Davis</td>
-        <td>1123456789</td>
-        <td>carol.davis@outlook.com</td>
-        <td>Bartender</td>
-        <td><a href="../edit_pages/edit_staff.html">Edit</a></td>
-        <td><a href="../home_pages/staff.html">Delete</a></td>
-      </tr>
-      <tr>
-        <td>4</td>
-        <td>David</td>
-        <td>Brown</td>
-        <td>1098765432</td>
-        <td>david.brown@icloud.com</td>
-        <td>Chef</td>
-        <td><a href="../edit_pages/edit_staff.html">Edit</a></td>
-        <td><a href="../home_pages/staff.html">Delete</a></td>
-      </tr>
-      <tr>
-        <td>5</td>
-        <td>Eve</td>
-        <td>Wilson</td>
-        <td>1234987654</td>
-        <td>eve.wilson@aol.com</td>
-        <td>Server</td>
-        <td><a href="../edit_pages/edit_staff.html">Edit</a></td>
-        <td><a href="../home_pages/staff.html">Delete</a></td>
-      </tr>
+      <thead>
+        <tr>
+          <th>staffID</th>
+          <th>firstName</th>
+          <th>lastName</th>
+          <th>phoneNumber</th>
+          <th>email</th>
+          <th>staffRole</th>
+          <th>Edit</th>
+          <th>Delete</th>
+        </tr>
+      </thead>
+      <tbody id="staffTable">
+        <!-- Dynamic staff rows will be inserted here -->
+      </tbody>
     </table>
     <div class="flex">
       <a class="back" href="../add_pages/add_staff.html">Add</a>
       <a class="back" href="../index.html">Back</a>
     </div>
+
+    <script>
+      // Function to fetch and display staff data
+      function loadStaff() {
+        fetch("http://classwork.engr.oregonstate.edu:9101/staff")
+          .then((response) => response.json())
+          .then((staffList) => {
+            const tableBody = document.getElementById("staffTable");
+            tableBody.innerHTML = ""; // Clear the table body
+
+            staffList.forEach((staff) => {
+              const row = document.createElement("tr");
+
+              row.innerHTML = `
+                <td>${staff.staffID}</td>
+                <td>${staff.firstName}</td>
+                <td>${staff.lastName}</td>
+                <td>${staff.phoneNumber}</td>
+                <td>${staff.email}</td>
+                <td>${staff.staffRole}</td>
+                <td><a href="../edit_pages/edit_staff.html?staffID=${staff.staffID}">Edit</a></td>
+                <td><a href="#" onclick="deleteStaff(${staff.staffID})">Delete</a></td>
+              `;
+
+              tableBody.appendChild(row);
+            });
+          })
+          .catch((error) => {
+            console.error("Error fetching staff data:", error);
+          });
+      }
+
+      // Function to delete a staff member
+      function deleteStaff(staffID) {
+        if (confirm("Are you sure you want to delete this staff member?")) {
+          fetch(`http://classwork.engr.oregonstate.edu:9101/staff/${staffID}`, { method: "DELETE" })
+            .then((response) => {
+              if (response.ok) {
+                alert("Staff member deleted successfully");
+                loadStaff(); // Reload the staff list
+              } else {
+                alert("Error deleting staff member");
+              }
+            })
+            .catch((error) => {
+              console.error("Error deleting staff member:", error);
+            });
+        }
+      }
+
+      // Load staff data when the page loads
+      document.addEventListener("DOMContentLoaded", loadStaff);
+    </script>
   </body>
 </html>

@@ -33,14 +33,14 @@
     <script>
       // Function to fetch and display customer data
       function loadCustomers() {
-        fetch('/customers')
+        fetch("http://classwork.engr.oregonstate.edu:9101/customers")
           .then((response) => response.json())
           .then((customers) => {
-            const tableBody = document.getElementById('customerTable').querySelector('tbody');
-            tableBody.innerHTML = ''; // Clear the table body
+            const tableBody = document.getElementById("customerTable").querySelector("tbody");
+            tableBody.innerHTML = ""; // Clear the table body
 
             customers.forEach((customer) => {
-              const row = document.createElement('tr');
+              const row = document.createElement("tr");
 
               row.innerHTML = `
                 <td>${customer.customerID}</td>
@@ -48,7 +48,7 @@
                 <td>${customer.lastName}</td>
                 <td>${customer.email}</td>
                 <td>${customer.phoneNumber}</td>
-                <td>${customer.tablePreference || 'NULL'}</td>
+                <td>${customer.tablePreference || "NULL"}</td>
                 <td><a href="../edit_pages/edit_customer.html?customerID=${customer.customerID}">Edit</a></td>
                 <td><a href="#" onclick="deleteCustomer(${customer.customerID})">Delete</a></td>
               `;
@@ -57,30 +57,30 @@
             });
           })
           .catch((error) => {
-            console.error('Error fetching customers:', error);
+            console.error("Error fetching customers:", error);
           });
       }
 
       // Function to delete a customer
       function deleteCustomer(customerID) {
-        if (confirm('Are you sure you want to delete this customer?')) {
-          fetch(`/customers/${customerID}`, { method: 'DELETE' })
+        if (confirm("Are you sure you want to delete this customer?")) {
+          fetch(`http://classwork.engr.oregonstate.edu:9101/customers/${customerID}`, { method: "DELETE" })
             .then((response) => {
               if (response.ok) {
-                alert('Customer deleted successfully');
+                alert("Customer deleted successfully");
                 loadCustomers(); // Reload the customer list
               } else {
-                alert('Error deleting customer');
+                alert("Error deleting customer");
               }
             })
             .catch((error) => {
-              console.error('Error deleting customer:', error);
+              console.error("Error deleting customer:", error);
             });
         }
       }
 
       // Load customers when the page loads
-      document.addEventListener('DOMContentLoaded', loadCustomers);
+      document.addEventListener("DOMContentLoaded", loadCustomers);
     </script>
   </body>
 </html>

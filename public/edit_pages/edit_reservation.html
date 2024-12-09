@@ -9,7 +9,7 @@
   <body>
     <div class="form-container">
       <h3>Update Reservation</h3>
-      <form action="../home_pages/reservations.html" method="POST">
+      <form id="editReservationForm">
         <label for="reservationDate">Reservation Date</label>
         <input type="date" id="reservationDate" name="reservationDate" required />
 
@@ -25,10 +25,63 @@
           <option value="Completed">Completed</option>
           <option value="Canceled">Canceled</option>
         </select>
-        <div class="flex">
-          <button type="submit" class="button">Update Reservation</button>
-        </div>
+
+      <div class="flex">
+        <button type="submit" class="button">Update Reservation</button>
+        <a href="../home_pages/reservations.html" class="button">Back</a>
+      </div>
       </form>
+      <p id="message"></p>
     </div>
+
+    <script>
+      // Fetch the reservation's current data and pre-fill the form
+      const reservationID = new URLSearchParams(window.location.search).get("reservationID");
+      fetch(`/reservations/${reservationID}`)
+        .then((response) => response.json())
+        .then((reservation) => {
+
+          const formattedDate = new Date(reservation.reservationDate).toISOString().split('T')[0];
+          document.getElementById("reservationDate").value = formattedDate;
+          document.getElementById("reservationTime").value = reservation.reservationTime;
+          document.getElementById("partySize").value = reservation.partySize;
+          document.getElementById("reservationStatus").value = reservation.reservationStatus;
+        })
+        .catch((error) => console.error("Error fetching reservation data:", error));
+
+      // Handle form submission
+      document.getElementById("editReservationForm").addEventListener("submit", function (e) {
+        e.preventDefault(); // Prevent the default form submission
+
+        const updatedReservation = {
+          reservationDate: document.getElementById("reservationDate").value,
+          reservationTime: document.getElementById("reservationTime").value,
+          partySize: document.getElementById("partySize").value,
+          reservationStatus: document.getElementById("reservationStatus").value,
+        };
+
+        fetch(`/reservations/${reservationID}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(updatedReservation),
+        })
+          .then((response) => {
+            if (response.ok) {
+              document.getElementById("message").textContent = "Reservation updated successfully!";
+              document.getElementById("message").style.color = "green";
+            } else {
+              document.getElementById("message").textContent = "Error updating reservation.";
+              document.getElementById("message").style.color = "red";
+            }
+          })
+          .catch((error) => {
+            console.error("Error:", error);
+            document.getElementById("message").textContent = "An unexpected error occurred.";
+            document.getElementById("message").style.color = "red";
+          });
+      });
+    </script>
   </body>
 </html>
