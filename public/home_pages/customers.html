@@ -7,7 +7,9 @@
     <title>Customers</title>
   </head>
   <body>
+    <!-- The main page content -->
     <h1>Customers</h1>
+    <!-- Table to display the list of customers -->
     <table id="customerTable">
       <thead>
         <tr>
@@ -25,6 +27,7 @@
         <!-- Customer rows will be dynamically loaded here -->
       </tbody>
     </table>
+    <!-- Navigation links for adding a new customer and going back to the main page -->
     <div class="flex">
       <a class="back" href="../add_pages/add_customer.html">Add</a>
       <a class="back" href="../index.html">Back</a>
@@ -38,10 +41,9 @@
           .then((customers) => {
             const tableBody = document.getElementById("customerTable").querySelector("tbody");
             tableBody.innerHTML = ""; // Clear the table body
-
+            // Iterate over the customer data and create a table row for each customer
             customers.forEach((customer) => {
               const row = document.createElement("tr");
-
               row.innerHTML = `
                 <td>${customer.customerID}</td>
                 <td>${customer.firstName}</td>
@@ -52,7 +54,7 @@
                 <td><a href="../edit_pages/edit_customer.html?customerID=${customer.customerID}">Edit</a></td>
                 <td><a href="#" onclick="deleteCustomer(${customer.customerID})">Delete</a></td>
               `;
-
+              // Add the populated row to the table body
               tableBody.appendChild(row);
             });
           })
@@ -67,10 +69,10 @@
           fetch(`http://classwork.engr.oregonstate.edu:9101/customers/${customerID}`, { method: "DELETE" })
             .then((response) => {
               if (response.ok) {
-                alert("Customer deleted successfully");
+                alert("Customer deleted successfully"); // Notify the user on successful deletion
                 loadCustomers(); // Reload the customer list
               } else {
-                alert("Error deleting customer");
+                alert("Error deleting customer"); // Notify the user on failure
               }
             })
             .catch((error) => {
