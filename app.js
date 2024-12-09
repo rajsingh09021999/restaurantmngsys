@@ -169,14 +169,15 @@ app.get("/reservations/:reservationID", (req, res) => {
 app.post("/reservations", (req, res) => {
   const { customerID, tableID, reservationDate, reservationTime, partySize, reservationStatus } = req.body;
 
-  if (!customerID || !reservationDate || !reservationTime || !partySize || !reservationStatus) {
+  if (!customerID || !tableID || !reservationDate || !reservationTime || !partySize || !reservationStatus) {
     return res.status(400).json({ error: "All fields are required" });
   }
 
   const query = `
-        INSERT INTO Reservations (customerID, tableID, reservationDate, reservationTime, partySize, reservationStatus)
-        VALUES (?, ?, ?, ?, ?, ?);
-    `;
+    INSERT INTO Reservations (customerID, tableID, reservationDate, reservationTime, partySize, reservationStatus)
+    VALUES (?, ?, ?, ?, ?, ?);
+  `;
+
   db.pool.query(
     query,
     [customerID, tableID, reservationDate, reservationTime, partySize, reservationStatus],
@@ -190,6 +191,7 @@ app.post("/reservations", (req, res) => {
     }
   );
 });
+
 
 app.put("/reservations/:reservationID", (req, res) => {
   const { reservationID } = req.params;

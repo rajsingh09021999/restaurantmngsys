@@ -11,19 +11,62 @@
       <h3>Add New Staff Schedule</h3>
       <form id="addStaffScheduleForm">
         <label for="scheduleID">Schedule ID</label>
-        <input type="number" id="scheduleID" name="scheduleID" required />
+        <select id="scheduleID" name="scheduleID" required>
+          <option value="" disabled selected>Select a Schedule</option>
+        </select>
 
         <label for="staffID">Staff ID</label>
-        <input type="number" id="staffID" name="staffID" required />
+        <select id="staffID" name="staffID" required>
+          <option value="" disabled selected>Select a Staff Member</option>
+        </select>
 
         <div class="flex">
           <button type="submit" class="button">Add Staff Schedule</button>
+          <a href="../home_pages/staffSchedules.html" class="button">Back</a>
         </div>
       </form>
       <p id="message"></p>
     </div>
 
     <script>
+      // Function to fetch and populate Schedule IDs
+      function loadSchedules() {
+        fetch("http://classwork.engr.oregonstate.edu:9101/schedules")
+          .then((response) => response.json())
+          .then((schedules) => {
+            const scheduleSelect = document.getElementById("scheduleID");
+            schedules.forEach((schedule) => {
+              const option = document.createElement("option");
+              option.value = schedule.scheduleID;
+              option.textContent = `Schedule ${schedule.scheduleID}: ${schedule.scheduleDate} (${schedule.scheduleStart} - ${schedule.scheduleEnd})`;
+              scheduleSelect.appendChild(option);
+            });
+          })
+          .catch((error) => console.error("Error fetching schedules:", error));
+      }
+
+      // Function to fetch and populate Staff IDs
+      function loadStaff() {
+        fetch("http://classwork.engr.oregonstate.edu:9101/staff")
+          .then((response) => response.json())
+          .then((staffMembers) => {
+            const staffSelect = document.getElementById("staffID");
+            staffMembers.forEach((staff) => {
+              const option = document.createElement("option");
+              option.value = staff.staffID;
+              option.textContent = `Staff ${staff.staffID}: ${staff.firstName} ${staff.lastName}`;
+              staffSelect.appendChild(option);
+            });
+          })
+          .catch((error) => console.error("Error fetching staff:", error));
+      }
+
+      // Load Schedules and Staff when the page loads
+      document.addEventListener("DOMContentLoaded", () => {
+        loadSchedules();
+        loadStaff();
+      });
+
       // Handle form submission
       document.getElementById("addStaffScheduleForm").addEventListener("submit", function (e) {
         e.preventDefault();

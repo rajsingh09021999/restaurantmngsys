@@ -10,6 +10,18 @@
     <div class="form-container">
       <h3>Add New Reservation</h3>
       <form id="addReservationForm">
+        <!-- Customer Dropdown -->
+        <label for="customerID">Customer</label>
+        <select id="customerID" name="customerID" required>
+          <option value="">Select a Customer</option>
+        </select>
+
+        <!-- Table Dropdown -->
+        <label for="tableID">Table</label>
+        <select id="tableID" name="tableID" required>
+          <option value="">Select a Table</option>
+        </select>
+
         <label for="reservationDate">Reservation Date</label>
         <input type="date" id="reservationDate" name="reservationDate" required />
 
@@ -26,24 +38,57 @@
           <option value="Canceled">Canceled</option>
         </select>
 
-        <button type="submit" class="button">Add Reservation</button>
+        <div class="flex">
+          <button type="submit" class="button">Add Reservation</button>
+          <a href="../home_pages/reservations.html" class="button">Back</a>
+        </div>
       </form>
       <p id="message"></p>
     </div>
 
     <script>
+      // Fetch existing customers to populate the customer dropdown
+      fetch("/customers")
+        .then((response) => response.json())
+        .then((customers) => {
+          const customerSelect = document.getElementById("customerID");
+          customers.forEach((customer) => {
+            const option = document.createElement("option");
+            option.value = customer.customerID;
+            option.textContent = `${customer.firstName} ${customer.lastName} (ID: ${customer.customerID})`;
+            customerSelect.appendChild(option);
+          });
+        })
+        .catch((error) => console.error("Error fetching customers:", error));
+
+      // Fetch existing tables to populate the table dropdown
+      fetch("/tables")
+        .then((response) => response.json())
+        .then((tables) => {
+          const tableSelect = document.getElementById("tableID");
+          tables.forEach((table) => {
+            const option = document.createElement("option");
+            option.value = table.tableID;
+            option.textContent = `Table ${table.tableID} - ${table.tableSection} (${table.tableType})`;
+            tableSelect.appendChild(option);
+          });
+        })
+        .catch((error) => console.error("Error fetching tables:", error));
+
       // Handle form submission
       document.getElementById("addReservationForm").addEventListener("submit", function (e) {
         e.preventDefault();
 
         const reservation = {
+          customerID: document.getElementById("customerID").value,
+          tableID: document.getElementById("tableID").value,
           reservationDate: document.getElementById("reservationDate").value,
           reservationTime: document.getElementById("reservationTime").value,
           partySize: document.getElementById("partySize").value,
           reservationStatus: document.getElementById("reservationStatus").value,
         };
 
-        fetch("http://classwork.engr.oregonstate.edu:9101/reservations", {
+        fetch("/reservations", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
