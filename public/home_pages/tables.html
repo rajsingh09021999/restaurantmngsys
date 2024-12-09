@@ -32,7 +32,7 @@
     <script>
       // Function to fetch and display tables data
       function loadTables() {
-        fetch("http://classwork.engr.oregonstate.edu:9101/tables")
+        fetch("http://classwork.engr.oregonstate.edu:9107/tables")
           .then((response) => response.json())
           .then((tables) => {
             const tableBody = document.getElementById("tablesTable").querySelector("tbody");
@@ -62,7 +62,7 @@
       // Function to delete a table
       function deleteTable(tableID) {
         if (confirm("Are you sure you want to delete this table?")) {
-          fetch(`http://classwork.engr.oregonstate.edu:9101/tables/${tableID}`, { method: "DELETE" })
+          fetch(`http://classwork.engr.oregonstate.edu:9107/tables/${tableID}`, { method: "DELETE" })
             .then((response) => {
               if (response.ok) {
                 alert("Table deleted successfully");

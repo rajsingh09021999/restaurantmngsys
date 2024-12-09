@@ -11,7 +11,14 @@
       <h3>Update Table</h3>
       <form id="editTableForm">
         <label for="tableSection">Table Section</label>
-        <input type="text" id="tableSection" name="tableSection" required />
+        <select id="tableSection" name="tableSection" required>
+          <option value="Window">Window</option>
+          <option value="Balcony">Balcony</option>
+          <option value="Patio">Patio</option>
+          <option value="Bar">Bar</option>
+          <option value="Main Dining Room">Main Dining Room</option>
+          <option value="Private Room">Private Room</option>
+        </select>
 
         <label for="tableType">Table Type</label>
         <select id="tableType" name="tableType">
@@ -23,7 +30,7 @@
         </select>
 
         <label for="tableSize">Table Size</label>
-        <input type="number" id="tableSize" name="tableSize" required />
+        <input type="number" id="tableSize" name="tableSize" min="1" max="20" required />
 
         <label for="availabilityStatus">Availability Status</label>
         <select id="availabilityStatus" name="availabilityStatus">

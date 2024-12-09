@@ -9,7 +9,7 @@ const cors = require("cors"); // Import CORS
 const db = require("./database/db-connector"); // Import the database connector
 
 const app = express(); // Create an instance of the express app
-const PORT = 9101; // Set a port number
+const PORT = 9107; // Set a port number
 
 // Middleware
 app.use(cors());

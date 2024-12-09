@@ -37,7 +37,7 @@
       // Populate staff and schedule options
       function loadOptions(selectedStaffID, selectedScheduleID) {
         // Load staff options
-        fetch("http://classwork.engr.oregonstate.edu:9101/staff")
+        fetch("http://classwork.engr.oregonstate.edu:9107/staff")
           .then((response) => response.json())
           .then((staffList) => {
             const staffSelect = document.getElementById("staffID");
@@ -54,7 +54,7 @@
           .catch((error) => console.error("Error fetching staff options:", error));
 
         // Load schedule options
-        fetch("http://classwork.engr.oregonstate.edu:9101/schedules")
+        fetch("http://classwork.engr.oregonstate.edu:9107/schedules")
           .then((response) => response.json())
           .then((scheduleList) => {
             const scheduleSelect = document.getElementById("scheduleID");
@@ -80,7 +80,7 @@
           scheduleID: document.getElementById("scheduleID").value,
         };
 
-        fetch("http://classwork.engr.oregonstate.edu:9101/staffSchedules", {
+        fetch("http://classwork.engr.oregonstate.edu:9107/staffSchedules", {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",

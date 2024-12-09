@@ -29,7 +29,7 @@
     <script>
       // Fetch and display staff table data
       function loadStaffTables() {
-        fetch("http://classwork.engr.oregonstate.edu:9101/staffTables")
+        fetch("http://classwork.engr.oregonstate.edu:9107/staffTables")
           .then((response) => response.json())
           .then((staffTables) => {
             const tableBody = document.querySelector("#staffTablesTable tbody");
@@ -56,7 +56,7 @@
       // Function to delete a staff table entry
       function deleteStaffTable(staffID, tableID) {
         if (confirm("Are you sure you want to delete this staff table?")) {
-          fetch("http://classwork.engr.oregonstate.edu:9101/staffTables", {
+          fetch("http://classwork.engr.oregonstate.edu:9107/staffTables", {
             method: "DELETE",
             headers: {
               "Content-Type": "application/json",

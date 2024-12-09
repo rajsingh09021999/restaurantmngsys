@@ -32,7 +32,7 @@
     <script>
       // Function to fetch and display schedules
       function loadSchedules() {
-        fetch("http://classwork.engr.oregonstate.edu:9101/schedules")
+        fetch("http://classwork.engr.oregonstate.edu:9107/schedules")
           .then((response) => response.json())
           .then((schedules) => {
             const tableBody = document.getElementById("scheduleTable");
@@ -64,7 +64,7 @@
       // Function to delete a schedule
       function deleteSchedule(scheduleID) {
         if (confirm("Are you sure you want to delete this schedule?")) {
-          fetch(`http://classwork.engr.oregonstate.edu:9101/schedules/${scheduleID}`, { method: "DELETE" })
+          fetch(`http://classwork.engr.oregonstate.edu:9107/schedules/${scheduleID}`, { method: "DELETE" })
             .then((response) => {
               if (response.ok) {
                 alert("Schedule deleted successfully");

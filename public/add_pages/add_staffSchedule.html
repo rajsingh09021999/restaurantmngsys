@@ -31,7 +31,7 @@
     <script>
       // Function to fetch and populate Schedule IDs
       function loadSchedules() {
-        fetch("http://classwork.engr.oregonstate.edu:9101/schedules")
+        fetch("http://classwork.engr.oregonstate.edu:9107/schedules")
           .then((response) => response.json())
           .then((schedules) => {
             const scheduleSelect = document.getElementById("scheduleID");
@@ -47,7 +47,7 @@
 
       // Function to fetch and populate Staff IDs
       function loadStaff() {
-        fetch("http://classwork.engr.oregonstate.edu:9101/staff")
+        fetch("http://classwork.engr.oregonstate.edu:9107/staff")
           .then((response) => response.json())
           .then((staffMembers) => {
             const staffSelect = document.getElementById("staffID");
@@ -76,7 +76,7 @@
           staffID: document.getElementById("staffID").value,
         };
 
-        fetch("http://classwork.engr.oregonstate.edu:9101/staffSchedules", {
+        fetch("http://classwork.engr.oregonstate.edu:9107/staffSchedules", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

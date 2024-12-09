@@ -33,7 +33,7 @@
     <script>
       // Function to fetch and display customer data
       function loadCustomers() {
-        fetch("http://classwork.engr.oregonstate.edu:9101/customers")
+        fetch("http://classwork.engr.oregonstate.edu:9107/customers")
           .then((response) => response.json())
           .then((customers) => {
             const tableBody = document.getElementById("customerTable").querySelector("tbody");
@@ -64,7 +64,7 @@
       // Function to delete a customer
       function deleteCustomer(customerID) {
         if (confirm("Are you sure you want to delete this customer?")) {
-          fetch(`http://classwork.engr.oregonstate.edu:9101/customers/${customerID}`, { method: "DELETE" })
+          fetch(`http://classwork.engr.oregonstate.edu:9107/customers/${customerID}`, { method: "DELETE" })
             .then((response) => {
               if (response.ok) {
                 alert("Customer deleted successfully");
