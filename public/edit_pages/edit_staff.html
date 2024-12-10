@@ -3,25 +3,36 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Link to external stylesheet for form styling -->
     <link rel="stylesheet" type="text/css" media="screen" href="../css/formStyles.css" />
+    
     <title>Update Staff Member</title>
   </head>
   <body>
     <div class="form-container">
       <h3>Update Staff Member</h3>
+
+      <!-- Form to update staff member details -->
       <form id="editStaffForm">
+
+        <!-- Input field for the staff member's first name -->
         <label for="firstName">First Name</label>
         <input type="text" id="firstName" name="firstName" required />
 
+        <!-- Input field for the staff member's last name -->
         <label for="lastName">Last Name</label>
         <input type="text" id="lastName" name="lastName" required />
 
+        <!-- Input field for the staff member's phone number -->
         <label for="phoneNumber">Phone Number</label>
         <input type="tel" id="phoneNumber" name="phoneNumber" required />
 
+        <!-- Input field for the staff member's email -->
         <label for="email">Email</label>
         <input type="email" id="email" name="email" required />
 
+        <!-- Dropdown for selecting the staff member's role -->
         <label for="staffRole">Role</label>
         <select id="staffRole" name="staffRole">
           <option value="server">Server</option>
@@ -31,7 +42,8 @@
           <option value="host">Host</option>
           <option value="busser">Busser</option>
         </select>
-
+        
+        <!-- Buttons for form submission and returning to the staff list -->
         <div class="flex">
           <button type="submit" class="button">Update Staff Member</button>
           <a href="../home_pages/staff.html" class="button">Back</a>
@@ -41,13 +53,15 @@
     </div>
 
     <script>
-      // Extract staffID from query string
+      // Extract the staffID from the URL query string 
       const staffID = new URLSearchParams(window.location.search).get("staffID");
 
-      // Fetch staff data and pre-fill the form
+      // Fetch the staff member's current data and pre-fill the form fields
       fetch(`/staff/${staffID}`)
         .then((response) => response.json())
         .then((staff) => {
+
+          // Populate the form fields with the fetched staff data
           document.getElementById("firstName").value = staff.firstName;
           document.getElementById("lastName").value = staff.lastName;
           document.getElementById("phoneNumber").value = staff.phoneNumber;
@@ -56,10 +70,11 @@
         })
         .catch((error) => console.error("Error fetching staff data:", error));
 
-      // Handle form submission
+      // Handle form submission for updating the staff member's details
       document.getElementById("editStaffForm").addEventListener("submit", function (e) {
-        e.preventDefault();
+        e.preventDefault();    // Prevent the default form submission behavior (page reload)
 
+        // Collect updated staff member data from the form fields
         const updatedStaff = {
           firstName: document.getElementById("firstName").value,
           lastName: document.getElementById("lastName").value,
@@ -68,19 +83,23 @@
           staffRole: document.getElementById("staffRole").value,
         };
 
+        // Send a PUT request to update the staff member data on the server
         fetch(`/staff/${staffID}`, {
           method: "PUT",
           headers: {
-            "Content-Type": "application/json",
+            "Content-Type": "application/json",      // Specify that the request body contains JSON data
           },
-          body: JSON.stringify(updatedStaff),
+          body: JSON.stringify(updatedStaff),       // Convert the updated data to a JSON string
+        })
         })
           .then((response) => {
             const messageElement = document.getElementById("message");
             if (response.ok) {
+              // Display a success message if the update was successful
               messageElement.textContent = "Staff member updated successfully!";
               messageElement.style.color = "green";
             } else {
+              // Display an error message if the server returns an error
               messageElement.textContent = "Error updating staff member.";
               messageElement.style.color = "red";
             }
