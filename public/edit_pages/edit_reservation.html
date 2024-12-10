@@ -9,16 +9,23 @@
   <body>
     <div class="form-container">
       <h3>Update Reservation</h3>
+      
+      <!-- Form for updating reservation details -->
       <form id="editReservationForm">
+
+        <!-- Date input field for selecting the reservation date -->
         <label for="reservationDate">Reservation Date</label>
         <input type="date" id="reservationDate" name="reservationDate" required />
-
+        
+        <!-- Time input field for specifying the reservation time -->
         <label for="reservationTime">Reservation Time</label>
         <input type="time" id="reservationTime" name="reservationTime" required />
 
+        <!-- Number input field for specifying the party size, with constraints for min and max values -->
         <label for="partySize">Party Size</label>
         <input type="number" id="partySize" name="partySize" min="1" max="20" required />
 
+        <!-- Dropdown for selecting the reservation status -->
         <label for="reservationStatus">Reservation Status</label>
         <select id="reservationStatus" name="reservationStatus">
           <option value="Booked">Booked</option>
@@ -26,6 +33,7 @@
           <option value="Canceled">Canceled</option>
         </select>
 
+      <!-- Buttons for submitting the form or navigating back -->
       <div class="flex">
         <button type="submit" class="button">Update Reservation</button>
         <a href="../home_pages/reservations.html" class="button">Back</a>
@@ -35,13 +43,18 @@
     </div>
 
     <script>
-      // Fetch the reservation's current data and pre-fill the form
+      // Get the reservation ID from the URL query string 
       const reservationID = new URLSearchParams(window.location.search).get("reservationID");
+
+      // Fetch the reservation's current data and pre-fill the form fields
       fetch(`/reservations/${reservationID}`)
         .then((response) => response.json())
         .then((reservation) => {
 
+          // Format the date to match the 'YYYY-MM-DD' format required by the date input field
           const formattedDate = new Date(reservation.reservationDate).toISOString().split('T')[0];
+
+          // Populate form fields with the fetched reservation data
           document.getElementById("reservationDate").value = formattedDate;
           document.getElementById("reservationTime").value = reservation.reservationTime;
           document.getElementById("partySize").value = reservation.partySize;
@@ -49,23 +62,25 @@
         })
         .catch((error) => console.error("Error fetching reservation data:", error));
 
-      // Handle form submission
+      // Handle form submission for updating the reservation
       document.getElementById("editReservationForm").addEventListener("submit", function (e) {
         e.preventDefault(); // Prevent the default form submission
 
+        // Create an object with the updated reservation details from the form
         const updatedReservation = {
           reservationDate: document.getElementById("reservationDate").value,
           reservationTime: document.getElementById("reservationTime").value,
           partySize: document.getElementById("partySize").value,
           reservationStatus: document.getElementById("reservationStatus").value,
         };
-
+        
+        // Send a PUT request to update the reservation on the server
         fetch(`/reservations/${reservationID}`, {
           method: "PUT",
           headers: {
-            "Content-Type": "application/json",
+            "Content-Type": "application/json",       // request body contains JSON data
           },
-          body: JSON.stringify(updatedReservation),
+          body: JSON.stringify(updatedReservation),   // Convert the updated reservation object to JSON
         })
           .then((response) => {
             if (response.ok) {

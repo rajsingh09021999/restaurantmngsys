@@ -10,32 +10,41 @@
     <!-- Primary form container -->
     <div class="form-container">
       <h3>Add New Staff Schedule</h3>
+      <!-- Form for assigning a staff member to a schedule -->
       <form id="addStaffScheduleForm">
+
+        <!-- Dropdown to select a Schedule ID -->
         <label for="scheduleID">Schedule ID</label>
         <select id="scheduleID" name="scheduleID" required>
           <option value="" disabled selected>Select a Schedule</option>
         </select>
 
+        <!-- Dropdown to select a Staff ID -->
         <label for="staffID">Staff ID</label>
         <select id="staffID" name="staffID" required>
           <option value="" disabled selected>Select a Staff Member</option>
         </select>
 
+        <!-- Buttons to submit the form or go back to the staff schedules page -->
         <div class="flex">
           <button type="submit" class="button">Add Staff Schedule</button>
           <a href="../home_pages/staffSchedules.html" class="button">Back</a>
         </div>
       </form>
+
+      <!-- Placeholder for displaying success or error messages -->
       <p id="message"></p>
     </div>
 
     <script>
-      // Function to fetch and populate Schedule IDs
+      // Fetch schedules from the server and populate the Schedule dropdown
       function loadSchedules() {
         fetch("http://classwork.engr.oregonstate.edu:9101/schedules")
           .then((response) => response.json())
           .then((schedules) => {
             const scheduleSelect = document.getElementById("scheduleID");
+
+            // Add each schedule as an option in the dropdown
             schedules.forEach((schedule) => {
               const option = document.createElement("option");
               option.value = schedule.scheduleID;
@@ -46,7 +55,7 @@
           .catch((error) => console.error("Error fetching schedules:", error));
       }
 
-      // Function to fetch and populate Staff IDs
+      // Fetch staff members from the server and populate the Staff dropdown
       function loadStaff() {
         fetch("http://classwork.engr.oregonstate.edu:9101/staff")
           .then((response) => response.json())
@@ -72,25 +81,29 @@
       document.getElementById("addStaffScheduleForm").addEventListener("submit", function (e) {
         e.preventDefault();
 
+        // Collect form data into an object
         const staffSchedule = {
           scheduleID: document.getElementById("scheduleID").value,
           staffID: document.getElementById("staffID").value,
         };
 
+        // Send the data to the server with a POST request
         fetch("http://classwork.engr.oregonstate.edu:9101/staffSchedules", {
           method: "POST",
           headers: {
-            "Content-Type": "application/json",
+            "Content-Type": "application/json",  // Tell the server we’re sending JSON
           },
-          body: JSON.stringify(staffSchedule),
+          body: JSON.stringify(staffSchedule),   // Convert the object to a JSON string
         })
           .then((response) => {
             const messageElement = document.getElementById("message");
             if (response.ok) {
+              // Show success message if the request was successful
               messageElement.textContent = "Staff schedule added successfully!";
               messageElement.style.color = "green";
               document.getElementById("addStaffScheduleForm").reset();
             } else {
+              // Show an error message if something went wrong
               messageElement.textContent = "Error adding staff schedule.";
               messageElement.style.color = "red";
             }
@@ -99,6 +112,7 @@
             }, 3000);
           })
           .catch((error) => {
+            // Handle network errors or unexpected issues
             console.error("Error:", error);
             const messageElement = document.getElementById("message");
             messageElement.textContent = "An unexpected error occurred.";

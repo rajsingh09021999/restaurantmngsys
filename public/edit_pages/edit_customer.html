@@ -9,19 +9,27 @@
   <body>
     <div class="form-container">
       <h3>Update Customer</h3>
+
+      <!-- Form to update customer details -->
       <form id="editCustomerForm">
+
+        <!-- Text input for the customer's first name -->
         <label for="firstName">First Name</label>
         <input type="text" id="firstName" name="firstName" required />
 
+        <!-- Text input for the customer's last name -->
         <label for="lastName">Last Name</label>
         <input type="text" id="lastName" name="lastName" required />
-
+        
+        <!-- Input field with email type for email validation -->
         <label for="email">Email</label>
         <input type="email" id="email" name="email" required />
 
+        <!-- Input field with 'tel' type to enter phone numbers -->
         <label for="phoneNumber">Phone Number</label>
         <input type="tel" id="phoneNumber" name="phoneNumber" required />
-
+        
+        <!-- Dropdown for selecting the customer's table preference -->
         <label for="tablePreference">Table Preference</label>
         <select id="tablePreference" name="tablePreference">
           <option value="Window">Window</option>
@@ -31,7 +39,8 @@
           <option value="Main Dining Room">Main Dining Room</option>
           <option value="Private Room">Private Room</option>
         </select>
-
+        
+        <!-- Button to submit the form and a link to go back to the customers.html page -->
         <div class="flex">
           <button type="submit" class="button">Update Customer</button>
           <a href="../home_pages/customers.html" class="button">Back</a>
@@ -41,11 +50,15 @@
     </div>
 
     <script>
-      // Fetch the customer's current data and pre-fill the form
+      // Get the customer ID from the URL query string 
       const customerID = new URLSearchParams(window.location.search).get("customerID");
+
+      // Fetch the current customer details using the extracted customer ID
       fetch(`/customers/${customerID}`)
         .then((response) => response.json())
         .then((customer) => {
+
+          // Populate each form field with the fetched customer data
           document.getElementById("firstName").value = customer.firstName;
           document.getElementById("lastName").value = customer.lastName;
           document.getElementById("email").value = customer.email;
@@ -54,10 +67,11 @@
         })
         .catch((error) => console.error("Error fetching customer data:", error));
 
-      // Handle form submission
+      // Event listener for form submission to handle updating customer data
       document.getElementById("editCustomerForm").addEventListener("submit", function (e) {
         e.preventDefault(); // Prevent the default form submission
 
+        // Collect the updated data from the form fields
         const updatedCustomer = {
           firstName: document.getElementById("firstName").value,
           lastName: document.getElementById("lastName").value,
@@ -66,23 +80,29 @@
           tablePreference: document.getElementById("tablePreference").value,
         };
 
+        // Send the updated customer data to the server using a PUT request
         fetch(`http://classwork.engr.oregonstate.edu:9101/customers/${customerID}`, {
           method: "PUT",
           headers: {
-            "Content-Type": "application/json",
+            "Content-Type": "application/json",     // Specify that the request body is JSON
           },
-          body: JSON.stringify(updatedCustomer),
+          body: JSON.stringify(updatedCustomer),    // Convert the data object to a JSON string
         })
           .then((response) => {
             if (response.ok) {
+
+              // Display a success message if the update was successful
               document.getElementById("message").textContent = "Customer updated successfully!";
               document.getElementById("message").style.color = "green";
             } else {
+
+              // Display an error message if there is a server error
               document.getElementById("message").textContent = "Error updating customer.";
               document.getElementById("message").style.color = "red";
             }
           })
           .catch((error) => {
+            // Catch all other unexpected errors
             console.error("Error:", error);
             document.getElementById("message").textContent = "An unexpected error occurred.";
             document.getElementById("message").style.color = "red";

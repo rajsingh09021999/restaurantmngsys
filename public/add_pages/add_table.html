@@ -10,7 +10,11 @@
     <!-- Primary form container -->
     <div class="form-container">
       <h3>Add New Table</h3>
+
+      <!-- Form to add a new table with specific details -->
       <form id="addTableForm">
+
+        <!-- Dropdown for selecting the table's section (e.g., Window, Patio, etc.) -->
         <label for="tableSection">Table Section</label>
         <select id="tableSection" name="tableSection" required>
           <option value="Window">Window</option>
@@ -21,6 +25,7 @@
           <option value="Private Room">Private Room</option>
         </select>
 
+        <!-- Dropdown for selecting the table type (e.g., Booth, High Top, etc.) -->
         <label for="tableType">Table Type</label>
         <select id="tableType" name="tableType">
           <option value="standard">Standard</option>
@@ -30,16 +35,19 @@
           <option value="communal">Communal</option>
         </select>
 
+        <!-- Input for specifying the table size (number of seats) -->
         <label for="tableSize">Table Size</label>
         <input type="number" id="tableSize" name="tableSize" min="1" max="20" required />
 
+        <!-- Dropdown to set the availability status of the table -->
         <label for="availabilityStatus">Availability Status</label>
         <select id="availabilityStatus" name="availabilityStatus">
           <option value="Available">Available</option>
           <option value="Reserved">Reserved</option>
           <option value="Occupied">Occupied</option>
         </select>
-
+        
+        <!-- Submit button to add the table and a back link to return to the tables page -->
         <div class="flex">
           <button type="submit" class="button">Add Table</button>
           <a href="../home_pages/tables.html" class="button">Back</a>
@@ -52,7 +60,8 @@
       // Handle form submission
       document.getElementById("addTableForm").addEventListener("submit", function (e) {
         e.preventDefault();
-
+        
+        // Collect table details from the form fields
         const newTable = {
           tableSection: document.getElementById("tableSection").value,
           tableType: document.getElementById("tableType").value,
@@ -60,12 +69,13 @@
           availabilityStatus: document.getElementById("availabilityStatus").value,
         };
 
+        // Send the table data to the server using a POST request
         fetch("http://classwork.engr.oregonstate.edu:9101/tables", {
           method: "POST",
           headers: {
-            "Content-Type": "application/json",
+            "Content-Type": "application/json",      // Ensure the request body is JSON
           },
-          body: JSON.stringify(newTable),
+          body: JSON.stringify(newTable),           // Convert the table data to a JSON string
         })
           .then((response) => {
             const messageElement = document.getElementById("message");

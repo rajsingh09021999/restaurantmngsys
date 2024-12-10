@@ -10,6 +10,8 @@
     <!-- Primary form container -->
     <div class="form-container">
       <h3>Add New Customer</h3>
+      
+      <!-- Form to add customer with fields for important customer information -->
       <form id="addCustomerForm">
         <label for="firstName">First Name</label>
         <input type="text" id="firstName" name="firstName" required />
@@ -22,7 +24,8 @@
 
         <label for="phoneNumber">Phone Number</label>
         <input type="tel" id="phoneNumber" name="phoneNumber" required />
-
+        
+        <!-- Dropdown for selecting table preference -->
         <label for="tablePreference">Table Preference</label>
         <select id="tablePreference" name="tablePreference">
           <option value="Window">Window</option>
@@ -32,12 +35,15 @@
           <option value="Main Dining Room">Main Dining Room</option>
           <option value="Private Room">Private Room</option>
         </select>
-
+        
+        <!-- Submit button and back button for navigation -->
         <div class="flex">
           <button type="submit" class="button">Add Customer</button>
           <a href="../home_pages/customers.html" class="button">Back</a>
         </div>
       </form>
+      
+      <!-- Display messages for success or error feedback -->
       <p id="message"></p>
     </div>
 
@@ -46,7 +52,7 @@
       document.getElementById("addCustomerForm").addEventListener("submit", function (e) {
         e.preventDefault(); // Prevent the default form submission
 
-        // Get form data
+        // Collect form data
         const customer = {
           firstName: document.getElementById("firstName").value,
           lastName: document.getElementById("lastName").value,
@@ -55,7 +61,7 @@
           tablePreference: document.getElementById("tablePreference").value,
         };
 
-        // Send AJAX request to server
+        // Send a POST request to add the new customer
         fetch("http://classwork.engr.oregonstate.edu:9101/customers", {
           method: "POST",
           headers: {
@@ -74,7 +80,7 @@
               messageElement.style.color = "red";
             }
 
-            // Clear the message after 3 seconds
+            // Clear message displayed after 3 seconds
             setTimeout(() => {
               messageElement.textContent = "";
             }, 3000);
@@ -85,7 +91,6 @@
             messageElement.textContent = "An unexpected error occurred.";
             messageElement.style.color = "red";
 
-            // Clear the message after 3 seconds
             setTimeout(() => {
               messageElement.textContent = "";
             }, 3000);
