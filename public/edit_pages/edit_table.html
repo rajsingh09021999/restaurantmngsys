@@ -7,9 +7,12 @@
     <title>Update Table</title>
   </head>
   <body>
+    <!-- Main container for the form -->
     <div class="form-container">
       <h3>Update Table</h3>
+      <!-- Form to update table details -->
       <form id="editTableForm">
+        <!-- Dropdown for selecting the table section -->
         <label for="tableSection">Table Section</label>
         <select id="tableSection" name="tableSection" required>
           <option value="Window">Window</option>
@@ -19,7 +22,7 @@
           <option value="Main Dining Room">Main Dining Room</option>
           <option value="Private Room">Private Room</option>
         </select>
-
+        <!-- Dropdown for selecting the table type -->
         <label for="tableType">Table Type</label>
         <select id="tableType" name="tableType">
           <option value="Standard">Standard</option>
@@ -28,20 +31,19 @@
           <option value="Low-top">Low-top</option>
           <option value="Communal">Communal</option>
         </select>
-
+        <!-- Input field for specifying the table size -->
         <label for="tableSize">Table Size</label>
         <input type="number" id="tableSize" name="tableSize" min="1" max="20" required />
-
+        <!-- Dropdown for selecting the availability status -->
         <label for="availabilityStatus">Availability Status</label>
         <select id="availabilityStatus" name="availabilityStatus">
           <option value="Available">Available</option>
           <option value="Reserved">Reserved</option>
           <option value="Occupied">Occupied</option>
         </select>
-
+        <!-- Submit and back buttons -->
         <div class="flex">
           <button type="submit" class="button">Update Table</button>
-          <!-- Back Button -->
           <a href="../home_pages/tables.html" class="button">Back</a>
         </div>
       </form>
@@ -49,11 +51,13 @@
     </div>
 
     <script>
-      // Fetch the table's current data and pre-fill the form
+      // Get the table ID from the URL query parameters
       const tableID = new URLSearchParams(window.location.search).get("tableID");
+      // Fetch current table data and populate the form
       fetch(`/tables/${tableID}`)
         .then((response) => response.json())
         .then((table) => {
+          // Pre-fill the form fields with the current table data
           document.getElementById("tableSection").value = table.tableSection;
           document.getElementById("tableType").value = table.tableType;
           document.getElementById("tableSize").value = table.tableSize;
@@ -65,6 +69,7 @@
       document.getElementById("editTableForm").addEventListener("submit", function (e) {
         e.preventDefault(); // Prevent the default form submission
 
+        // Create an object with the updated table data
         const updatedTable = {
           tableSection: document.getElementById("tableSection").value,
           tableType: document.getElementById("tableType").value,
@@ -72,6 +77,7 @@
           availabilityStatus: document.getElementById("availabilityStatus").value,
         };
 
+        // Send a PUT request to update the table data on the server
         fetch(`/tables/${tableID}`, {
           method: "PUT",
           headers: {
@@ -81,14 +87,17 @@
         })
           .then((response) => {
             if (response.ok) {
+              // Display success message if the update was successful
               document.getElementById("message").textContent = "Table updated successfully!";
               document.getElementById("message").style.color = "green";
             } else {
+              // Display error message if the update failed
               document.getElementById("message").textContent = "Error updating table.";
               document.getElementById("message").style.color = "red";
             }
           })
           .catch((error) => {
+            // Display generic error message for unexpected errors
             console.error("Error:", error);
             document.getElementById("message").textContent = "An unexpected error occurred.";
             document.getElementById("message").style.color = "red";

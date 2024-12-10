@@ -7,8 +7,10 @@
     <title>Update Staff Table</title>
   </head>
   <body>
+    <!-- Primary form container -->
     <div class="form-container">
       <h3>Update Staff Table</h3>
+      <!-- Form to edit staffTable entry with fields for relationship information -->
       <form id="editStaffTableForm">
         <label for="staffID">Staff ID</label>
         <select id="staffID" name="staffID" required>
@@ -29,21 +31,24 @@
     </div>
 
     <script>
+      // Extract staffID and tableID from the URL query parameters
       const urlParams = new URLSearchParams(window.location.search);
       const staffIDParam = urlParams.get("staffID");
       const tableIDParam = urlParams.get("tableID");
 
-      // Populate staff and table options
+      // Populate staff and table options dynamically
       function loadOptions(selectedStaffID, selectedTableID) {
         // Load staff options
         fetch("http://classwork.engr.oregonstate.edu:9101/staff")
           .then((response) => response.json())
           .then((staffList) => {
             const staffSelect = document.getElementById("staffID");
+            // Populate staff dropdown with options
             staffList.forEach((staff) => {
               const option = document.createElement("option");
               option.value = staff.staffID;
               option.textContent = `ID: ${staff.staffID}`;
+              // Preselect the current staff ID if matches the query parameter
               if (staff.staffID == selectedStaffID) {
                 option.selected = true; // Preselect the current value
               }
@@ -52,11 +57,12 @@
           })
           .catch((error) => console.error("Error fetching staff options:", error));
 
-        // Load table options
+        // Fetch table data from the server
         fetch("http://classwork.engr.oregonstate.edu:9101/tables")
           .then((response) => response.json())
           .then((tableList) => {
             const tableSelect = document.getElementById("tableID");
+            // Populate table dropdown with options
             tableList.forEach((table) => {
               const option = document.createElement("option");
               option.value = table.tableID;
@@ -74,11 +80,13 @@
       document.getElementById("editStaffTableForm").addEventListener("submit", function (e) {
         e.preventDefault();
 
+        // Create an object with updated staff-table information
         const updatedStaffTable = {
           staffID: document.getElementById("staffID").value,
           tableID: document.getElementById("tableID").value,
         };
 
+        // Send a PUT request to update the staff-table relationship
         fetch("http://classwork.engr.oregonstate.edu:9101/staffTables", {
           method: "PUT",
           headers: {
@@ -102,6 +110,7 @@
               });
             }
           })
+          // Display error message
           .catch((error) => {
             console.error("Error updating staff table:", error);
             const messageElement = document.getElementById("message");
@@ -113,6 +122,7 @@
       // Initialize the form
       document.addEventListener("DOMContentLoaded", () => {
         if (staffIDParam && tableIDParam) {
+          // Load dropdown options with selected values
           loadOptions(staffIDParam, tableIDParam);
         } else {
           console.error("Staff ID or Table ID missing in URL");
