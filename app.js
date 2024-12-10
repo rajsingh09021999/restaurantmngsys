@@ -3,15 +3,16 @@
 /*
     SETUP
 */
-
+// Import dependencies
 const express = require("express"); // Import express
 const cors = require("cors"); // Import CORS
 const db = require("./database/db-connector"); // Import the database connector
 
+// Initialize the app
 const app = express(); // Create an instance of the express app
 const PORT = 9101; // Set a port number
 
-// Middleware
+// Middleware setup
 app.use(cors());
 app.use(express.json()); // Parses JSON data
 app.use(express.urlencoded({ extended: true })); // Parses form data
@@ -30,6 +31,7 @@ db.pool.query("SELECT 1", (err) => {
 /*
     ROUTES
 */
+// Customers Endpoints
 // Read all customers
 app.get("/customers", (req, res) => {
   const query = `
@@ -41,34 +43,34 @@ app.get("/customers", (req, res) => {
       console.error(error);
       res.status(500).json({ error: "Database error", details: error });
     } else {
-      res.json(rows);
+      res.json(rows); // Respond with the customer data
     }
   });
 });
 
 // Read a single customer by customerID
 app.get("/customers/:customerID", (req, res) => {
-  const { customerID } = req.params;
+  const { customerID } = req.params; // Extract customerID from route parameters
 
   const query = `
         SELECT customerID, firstName, lastName, email, phoneNumber, tablePreference 
         FROM Customers 
         WHERE customerID = ?;
     `;
-  
+
   db.pool.query(query, [customerID], (error, rows) => {
     if (error) {
       console.error("Database error:", error);
       res.status(500).json({ error: "Database error", details: error });
     } else if (rows.length === 0) {
-      res.status(404).json({ error: "Customer not found" });
+      res.status(404).json({ error: "Customer not found" }); // Handle case where no customer is found
     } else {
-      res.json(rows[0]);
+      res.json(rows[0]); // Respond with the customer data
     }
   });
 });
 
-
+// Add a new customer
 app.post("/customers", (req, res) => {
   console.log("Request body:", req.body); // Debugging log
   const { firstName, lastName, email, phoneNumber, tablePreference } = req.body;
@@ -91,7 +93,7 @@ app.post("/customers", (req, res) => {
   });
 });
 
-// Update a customer
+// Update an existing customer
 app.put("/customers/:customerID", (req, res) => {
   const { customerID } = req.params;
   const { firstName, lastName, email, phoneNumber, tablePreference } = req.body;
@@ -113,7 +115,7 @@ app.put("/customers/:customerID", (req, res) => {
 
 // Delete a customer
 app.delete("/customers/:customerID", (req, res) => {
-  const { customerID } = req.params;
+  const { customerID } = req.params; // Extract customerID from route parameters
   const query = `
         DELETE FROM Customers 
         WHERE customerID = ?;
@@ -128,7 +130,8 @@ app.delete("/customers/:customerID", (req, res) => {
   });
 });
 
-// Reservations
+// Reservations Endpoints
+// Read all reservations
 app.get("/reservations", (req, res) => {
   const query = `
         SELECT reservationID, customerID, tableID, reservationDate, reservationTime, partySize, reservationStatus
@@ -139,7 +142,7 @@ app.get("/reservations", (req, res) => {
       console.error(error);
       res.status(500).json({ error: "Database error", details: error });
     } else {
-      res.json(rows);
+      res.json(rows); // Respond with the reservation data
     }
   });
 });
@@ -158,14 +161,14 @@ app.get("/reservations/:reservationID", (req, res) => {
       console.error(error);
       res.status(500).json({ error: "Database error", details: error });
     } else if (rows.length === 0) {
-      res.status(404).json({ error: "Reservation not found" });
+      res.status(404).json({ error: "Reservation not found" }); // Handle case where no reservation is found
     } else {
-      res.json(rows[0]); // Return the first (and only) row as JSON
+      res.json(rows[0]); // Respond with the reservation data
     }
   });
 });
 
-
+// Add a new reservation
 app.post("/reservations", (req, res) => {
   const { customerID, tableID, reservationDate, reservationTime, partySize, reservationStatus } = req.body;
 
@@ -178,21 +181,17 @@ app.post("/reservations", (req, res) => {
     VALUES (?, ?, ?, ?, ?, ?);
   `;
 
-  db.pool.query(
-    query,
-    [customerID, tableID, reservationDate, reservationTime, partySize, reservationStatus],
-    (error) => {
-      if (error) {
-        console.error("Database error:", error);
-        res.status(500).send("Error adding reservation");
-      } else {
-        res.status(201).send("Reservation added successfully");
-      }
+  db.pool.query(query, [customerID, tableID, reservationDate, reservationTime, partySize, reservationStatus], (error) => {
+    if (error) {
+      console.error("Database error:", error);
+      res.status(500).send("Error adding reservation");
+    } else {
+      res.status(201).send("Reservation added successfully");
     }
-  );
+  });
 });
 
-
+// Add an existing reservation
 app.put("/reservations/:reservationID", (req, res) => {
   const { reservationID } = req.params;
   const { reservationDate, reservationTime, partySize, reservationStatus } = req.body;
@@ -206,23 +205,19 @@ app.put("/reservations/:reservationID", (req, res) => {
     SET reservationDate = ?, reservationTime = ?, partySize = ?, reservationStatus = ?
     WHERE reservationID = ?;
   `;
-  db.pool.query(
-    query,
-    [reservationDate, reservationTime, partySize, reservationStatus, reservationID],
-    (error) => {
-      if (error) {
-        console.error("Database error:", error);
-        res.status(500).json({ error: "Database error", details: error });
-      } else {
-        res.send("Reservation updated successfully");
-      }
+  db.pool.query(query, [reservationDate, reservationTime, partySize, reservationStatus, reservationID], (error) => {
+    if (error) {
+      console.error("Database error:", error);
+      res.status(500).json({ error: "Database error", details: error });
+    } else {
+      res.send("Reservation updated successfully");
     }
-  );
+  });
 });
 
-
+// Delete an existing reservation
 app.delete("/reservations/:reservationID", (req, res) => {
-  const { reservationID } = req.params;
+  const { reservationID } = req.params; // Extract reservationID from route parameters
   const query = `
         DELETE FROM Reservations 
         WHERE reservationID = ?;
@@ -237,7 +232,7 @@ app.delete("/reservations/:reservationID", (req, res) => {
   });
 });
 
-
+// Table Endpoints
 // Read all tables
 app.get("/tables", (req, res) => {
   const query = `
@@ -249,7 +244,7 @@ app.get("/tables", (req, res) => {
       console.error(error);
       res.status(500).json({ error: "Database error", details: error });
     } else {
-      res.json(rows); // Return all rows as JSON
+      res.json(rows); // Respond with the table data
     }
   });
 });
@@ -268,9 +263,9 @@ app.get("/tables/:tableID", (req, res) => {
       console.error(error);
       res.status(500).json({ error: "Database error", details: error });
     } else if (rows.length === 0) {
-      res.status(404).json({ error: "Table not found" });
+      res.status(404).json({ error: "Table not found" }); // Handle case where no table is found
     } else {
-      res.json(rows[0]);
+      res.json(rows[0]); // Respond with the table data
     }
   });
 });
@@ -297,7 +292,7 @@ app.post("/tables", (req, res) => {
   });
 });
 
-// Update a table
+// Update am existing table
 app.put("/tables/:tableID", (req, res) => {
   const { tableID } = req.params;
   const { tableSection, tableType, tableSize, availabilityStatus } = req.body;
@@ -317,9 +312,9 @@ app.put("/tables/:tableID", (req, res) => {
   });
 });
 
-// Delete a table
+// Delete an existing table
 app.delete("/tables/:tableID", (req, res) => {
-  const { tableID } = req.params;
+  const { tableID } = req.params; // Extract tableID from route parameters
   const query = `
         DELETE FROM Tables 
         WHERE tableID = ?;
@@ -334,7 +329,8 @@ app.delete("/tables/:tableID", (req, res) => {
   });
 });
 
-// Staff
+// Staff Endpoints
+// Read all staff members
 app.get("/staff", (req, res) => {
   const query = `
         SELECT staffID, firstName, lastName, phoneNumber, email, staffRole
@@ -345,7 +341,7 @@ app.get("/staff", (req, res) => {
       console.error(error);
       res.status(500).json({ error: "Database error", details: error });
     } else {
-      res.json(rows);
+      res.json(rows); // Respond with the staff data
     }
   });
 });
@@ -364,14 +360,14 @@ app.get("/staff/:staffID", (req, res) => {
       console.error(error);
       res.status(500).json({ error: "Database error", details: error });
     } else if (rows.length === 0) {
-      res.status(404).json({ error: "Staff member not found" });
+      res.status(404).json({ error: "Staff member not found" }); // Handle case where no staff member is found
     } else {
-      res.json(rows[0]);
+      res.json(rows[0]); // Respond with the staff data
     }
   });
 });
 
-
+// Add a new staff member
 app.post("/staff", (req, res) => {
   const { firstName, lastName, phoneNumber, email, staffRole } = req.body;
 
@@ -393,6 +389,7 @@ app.post("/staff", (req, res) => {
   });
 });
 
+// Update an existing staff member
 app.put("/staff/:staffID", (req, res) => {
   const { staffID } = req.params;
   const { firstName, lastName, phoneNumber, email, staffRole } = req.body;
@@ -412,8 +409,9 @@ app.put("/staff/:staffID", (req, res) => {
   });
 });
 
+// Delete an existing staff member
 app.delete("/staff/:staffID", (req, res) => {
-  const { staffID } = req.params;
+  const { staffID } = req.params; // Extract staffID from route parameters
   const query = `
         DELETE FROM Staff 
         WHERE staffID = ?;
@@ -428,7 +426,8 @@ app.delete("/staff/:staffID", (req, res) => {
   });
 });
 
-// Schedules
+// Schedules Endpoints
+// Read all schedules
 app.get("/schedules", (req, res) => {
   const query = `
         SELECT scheduleID, scheduleDate, scheduleStart, scheduleEnd, scheduleType 
@@ -439,11 +438,12 @@ app.get("/schedules", (req, res) => {
       console.error(error);
       res.status(500).json({ error: "Database error", details: error });
     } else {
-      res.json(rows);
+      res.json(rows); // Respond with the schedule data
     }
   });
 });
 
+// Read a single schedule by scheduleID
 app.get("/schedules/:scheduleID", (req, res) => {
   const { scheduleID } = req.params;
 
@@ -457,14 +457,14 @@ app.get("/schedules/:scheduleID", (req, res) => {
       console.error(error);
       res.status(500).json({ error: "Database error", details: error });
     } else if (rows.length === 0) {
-      res.status(404).json({ error: "Schedule not found" });
+      res.status(404).json({ error: "Schedule not found" }); // Handle case where no schedule is found
     } else {
-      res.json(rows[0]);
+      res.json(rows[0]); // Respond with the schedule data
     }
   });
 });
 
-
+// Add a new schedule
 app.post("/schedules", (req, res) => {
   const { scheduleDate, scheduleStart, scheduleEnd, scheduleType } = req.body;
 
@@ -486,6 +486,7 @@ app.post("/schedules", (req, res) => {
   });
 });
 
+// Update an existing schedule
 app.put("/schedules/:scheduleID", (req, res) => {
   const { scheduleID } = req.params;
   const { scheduleDate, scheduleStart, scheduleEnd, scheduleType } = req.body;
@@ -505,8 +506,9 @@ app.put("/schedules/:scheduleID", (req, res) => {
   });
 });
 
+// Delete an existing schedule
 app.delete("/schedules/:scheduleID", (req, res) => {
-  const { scheduleID } = req.params;
+  const { scheduleID } = req.params; // Extract scheduleID from route parameters
   const query = `
         DELETE FROM Schedules 
         WHERE scheduleID = ?;
@@ -521,7 +523,8 @@ app.delete("/schedules/:scheduleID", (req, res) => {
   });
 });
 
-// StaffSchedules (Intersection Table)
+// StaffSchedules (Intersection Table) Endpoints
+// Read all StaffSchedules entries
 app.get("/staffSchedules", (req, res) => {
   const query = `
         SELECT staffID, scheduleID 
@@ -532,11 +535,12 @@ app.get("/staffSchedules", (req, res) => {
       console.error(error);
       res.status(500).json({ error: "Database error", details: error });
     } else {
-      res.json(rows);
+      res.json(rows); // Respond with the staffSchedule data
     }
   });
 });
 
+// Create a new staffSchedule relationship entry
 app.post("/staffSchedules", (req, res) => {
   const { staffID, scheduleID } = req.body;
 
@@ -558,7 +562,7 @@ app.post("/staffSchedules", (req, res) => {
   });
 });
 
-// Update a staff schedule (staffID or scheduleID)
+// Update an exxisting staff schedule (staffID or scheduleID)
 app.put("/staffSchedules", (req, res) => {
   const { oldStaffID, oldScheduleID, newStaffID, newScheduleID } = req.body;
 
@@ -581,8 +585,9 @@ app.put("/staffSchedules", (req, res) => {
   });
 });
 
+// Delete an exxisting staff schedule (staffID or scheduleID)
 app.delete("/staffSchedules", (req, res) => {
-  const { staffID, scheduleID } = req.body;
+  const { staffID, scheduleID } = req.body; // Extract staffID & scheduleID from route parameters
 
   const query = `
         DELETE FROM StaffSchedules 
@@ -598,7 +603,8 @@ app.delete("/staffSchedules", (req, res) => {
   });
 });
 
-// StaffTables (Intersection Table)
+// StaffTables (Intersection Table) Endpoints
+// Read all staffTables relationship entries
 app.get("/staffTables", (req, res) => {
   const query = `
         SELECT staffID, tableID 
@@ -609,11 +615,12 @@ app.get("/staffTables", (req, res) => {
       console.error(error);
       res.status(500).json({ error: "Database error", details: error });
     } else {
-      res.json(rows);
+      res.json(rows); // Respond with the staffTable data
     }
   });
 });
 
+// Add a new staffTable relationship entry
 app.post("/staffTables", (req, res) => {
   const { staffID, tableID } = req.body;
 
@@ -635,7 +642,7 @@ app.post("/staffTables", (req, res) => {
   });
 });
 
-// Update a staff table (staffID or tableID)
+// Update an existing taff table (staffID or tableID) entry
 app.put("/staffTables", (req, res) => {
   const { oldStaffID, oldTableID, newStaffID, newTableID } = req.body;
 
@@ -658,8 +665,9 @@ app.put("/staffTables", (req, res) => {
   });
 });
 
+// Delete an existing taff table (staffID or tableID) entry
 app.delete("/staffTables", (req, res) => {
-  const { staffID, tableID } = req.body;
+  const { staffID, tableID } = req.body; // Extract staffID & tableID from route parameters
 
   const query = `
         DELETE FROM StaffTables 
@@ -675,11 +683,9 @@ app.delete("/staffTables", (req, res) => {
   });
 });
 
-
 /*
     LISTENER
 */
-
 app.listen(PORT, function () {
   console.log("Express started on http://localhost:" + PORT + "; press Ctrl-C to terminate.");
 });
