@@ -9,16 +9,23 @@
   <body>
     <div class="form-container">
       <h3>Update Schedule</h3>
+
+      <!-- Form for updating schedule details -->
       <form id="updateScheduleForm">
+
+        <!-- Date input for selecting the schedule date -->
         <label for="scheduleDate">Date</label>
         <input type="date" id="scheduleDate" name="scheduleDate" required />
 
+        <!-- Time input for the schedule's start time -->
         <label for="scheduleStart">Start Time</label>
         <input type="time" id="scheduleStart" name="scheduleStart" required />
 
+        <!-- Time input for the schedule's end time -->
         <label for="scheduleEnd">End Time</label>
         <input type="time" id="scheduleEnd" name="scheduleEnd" required />
 
+        <!-- Dropdown for selecting the schedule type (Morning, Afternoon, Evening) -->
         <label for="scheduleType">Schedule Type</label>
         <select id="scheduleType" name="scheduleType">
           <option value="Morning">Morning</option>
@@ -26,6 +33,7 @@
           <option value="Evening">Evening</option>
         </select>
 
+        <!-- Submit button to update the schedule and a back button for navigation -->
         <div class="flex">
           <button type="submit" class="button">Update Schedule</button>
           <a href="../home_pages/schedules.html" class="button">Back</a>
@@ -35,29 +43,33 @@
     </div>
 
     <script>
-      // Extract the scheduleID from the query string
+      // Get the scheduleID from the query string
       const scheduleID = new URLSearchParams(window.location.search).get("scheduleID");
 
-      // Fetch the schedule data and pre-fill the form
+      // Fetch the existing schedule data and pre-fill the form fields
       fetch(`/schedules/${scheduleID}`)
         .then((response) => response.json())
         .then((schedule) => {
 
+          // Format the date to 'YYYY-MM-DD' for compatibility with the date input field
           const formattedDate = new Date(schedule.scheduleDate).toISOString().split("T")[0];
-
+          
+          // Populate the form fields with the fetched schedule data
           document.getElementById("scheduleDate").value = formattedDate;
           document.getElementById("scheduleStart").value = schedule.scheduleStart;
           document.getElementById("scheduleEnd").value = schedule.scheduleEnd;
           document.getElementById("scheduleType").value = schedule.scheduleType;
         })
         .catch((error) => {
+          // Log any errors encountered while fetching schedule data
           console.error("Error fetching schedule data:", error);
         });
 
-      // Handle form submission to update the schedule
+      // Handle form submission to update the schedule details
       document.getElementById("updateScheduleForm").addEventListener("submit", function (e) {
-        e.preventDefault();
+        e.preventDefault();      // Prevent the default form submission behavior (page reload)
 
+        // Collect the updated schedule data from the form fields
         const updatedSchedule = {
           scheduleDate: document.getElementById("scheduleDate").value,
           scheduleStart: document.getElementById("scheduleStart").value,
@@ -65,6 +77,7 @@
           scheduleType: document.getElementById("scheduleType").value,
         };
 
+        // Send a PUT request to update the schedule on the server
         fetch(`/schedules/${scheduleID}`, {
           method: "PUT",
           headers: {
@@ -75,12 +88,16 @@
           .then((response) => {
             const messageElement = document.getElementById("message");
             if (response.ok) {
+              // Show success message
               messageElement.textContent = "Schedule updated successfully!";
               messageElement.style.color = "green";
             } else {
+              // Show error message if the server returns an error
               messageElement.textContent = "Error updating schedule.";
               messageElement.style.color = "red";
             }
+
+            // Clear any message out after 3 seconds
             setTimeout(() => {
               messageElement.textContent = "";
             }, 3000);
